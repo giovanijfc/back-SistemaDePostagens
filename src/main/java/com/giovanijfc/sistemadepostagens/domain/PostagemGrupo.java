@@ -10,13 +10,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
 import com.giovanijfc.sistemadepostagens.domain.enums.TipoPostagem;
 
 @Entity
-public class Postagem implements Serializable {
+public class PostagemGrupo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -26,23 +27,24 @@ public class Postagem implements Serializable {
 	private String texto;
 	private Date data;
 
-	@ManyToMany(fetch=FetchType.LAZY)
-	private List<Resposta> resposta = new ArrayList<Resposta>();
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name="resposta_id")
+	private List<RespostaGroup> resposta = new ArrayList<RespostaGroup>();
 
 	@OneToOne
-	private Usuario usuario;
-	
+	private Membro membros;
+
 	private TipoPostagem tipo;
 
-	public Postagem() {
+	public PostagemGrupo() {
 	}
 
-	public Postagem(Integer id, String texto, Date data, Usuario usuario, TipoPostagem tipo) {
+	public PostagemGrupo(Integer id, String texto, Date data, Membro m1, TipoPostagem tipo) {
 		super();
 		this.id = id;
 		this.texto = texto;
 		this.data = data;
-		this.usuario = usuario;
+		this.membros = m1;
 		this.tipo = tipo;
 	}
 
@@ -62,7 +64,7 @@ public class Postagem implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Postagem other = (Postagem) obj;
+		PostagemGrupo other = (PostagemGrupo) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -95,20 +97,20 @@ public class Postagem implements Serializable {
 		this.data = data;
 	}
 
-	public List<Resposta> getResposta() {
+	public List<RespostaGroup> getResposta() {
 		return resposta;
 	}
 
-	public void setResposta(List<Resposta> resposta) {
-		this.resposta = resposta;
+	public void setResposta(List<RespostaGroup> respostaGroup) {
+		this.resposta = respostaGroup;
+	} 
+
+	public Membro getMembros() {
+		return membros;
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setMembros(Membro membro) {
+		this.membros = membro;
 	}
 
 	public TipoPostagem getTipo() {

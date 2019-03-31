@@ -35,7 +35,7 @@ public class Membro implements Serializable{
 	private Cargo cargo;
 	
 	@JsonIgnore
-	@ManyToMany(mappedBy="membro")
+	@ManyToMany(mappedBy="membros")
 	private List<Grupo> grupo = new ArrayList<Grupo>();
 
 	public Membro() {		

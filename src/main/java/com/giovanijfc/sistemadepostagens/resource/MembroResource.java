@@ -30,8 +30,8 @@ public class MembroResource {
 	}
 	
 	@RequestMapping(value="/adicionar", method=RequestMethod.POST)
-	public ResponseEntity<Membro> adicionar(@RequestBody Membro obj){
-		membroSer.adicionar(obj);
+	public ResponseEntity<Membro> adicionar(@RequestBody Membro membroDto){
+		membroSer.adicionar(membroDto);
 		return ResponseEntity.noContent().build();
 	}
 	
@@ -41,8 +41,8 @@ public class MembroResource {
 		return ResponseEntity.noContent().build();
 	}
 	@RequestMapping(value="/atualizar", method=RequestMethod.PUT)
-	public ResponseEntity<Usuario> atualizar(@RequestBody MembroDTO obj, @RequestParam(value="email")String email){
-		membroSer.atualizar(obj, email);
+	public ResponseEntity<Usuario> atualizar(@RequestBody MembroDTO membroDto, @RequestParam(value="email")String email){
+		membroSer.atualizar(membroDto, email);
 		return ResponseEntity.noContent().build();
 	}
 }

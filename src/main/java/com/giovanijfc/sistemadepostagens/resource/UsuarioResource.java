@@ -29,8 +29,8 @@ public class UsuarioResource {
 	}
 
 	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
-	public ResponseEntity<Usuario> adicionar(@RequestBody UsuarioDTO objDto) {
-		usuarioSer.adicionar(objDto);
+	public ResponseEntity<Usuario> adicionar(@RequestBody UsuarioDTO usuarioDto) {
+		usuarioSer.adicionar(usuarioDto);
 		return ResponseEntity.noContent().build();
 	}
 
@@ -41,10 +41,22 @@ public class UsuarioResource {
 	}
 
 	@RequestMapping(value = "/atualizar", method = RequestMethod.PUT)
-	public ResponseEntity<Usuario> atualizar(@RequestBody UsuarioDTO objDto,
+	public ResponseEntity<Usuario> atualizar(@RequestBody UsuarioDTO usuarioDto,
 			@RequestParam(value = "email") String email) {
 		Usuario user = usuarioSer.buscarPorEmail(email);
-		usuarioSer.atualizarDTO(objDto, user);
+		usuarioSer.atualizarDTO(usuarioDto, user);
 		return ResponseEntity.noContent().build();
+	}
+
+	@RequestMapping(value = "/adicionarAmigos/{idPri}", method = RequestMethod.PUT)
+	public ResponseEntity<Usuario> adicionarAmigos(@PathParam(value = "idSec") Integer idSec, @PathVariable Integer idPri) {
+		usuarioSer.adicionarAmigo(idSec, idPri);
+		return ResponseEntity.noContent().build();
+	}
+
+	@RequestMapping(value = "/removerAmigos/{idPri}", method = RequestMethod.PUT)
+	public ResponseEntity<Usuario> removerAmigos(@PathParam(value="idSec") Integer idSec, @PathVariable Integer idPri) {
+	usuarioSer.removerAmigo(idSec, idPri);
+	return ResponseEntity.noContent().build();
 	}
 }

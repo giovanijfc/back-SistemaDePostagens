@@ -13,10 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.giovanijfc.sistemadepostagens.domain.enums.TipoPostagem;
 
 @Entity
-public class Postagem implements Serializable {
+public class Resposta implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -26,23 +27,24 @@ public class Postagem implements Serializable {
 	private String texto;
 	private Date data;
 
-	@ManyToMany(fetch=FetchType.LAZY)
-	private List<Resposta> resposta = new ArrayList<Resposta>();
-
 	@OneToOne
 	private Usuario usuario;
+
+	@ManyToMany(fetch=FetchType.LAZY, mappedBy="resposta")
+	@JsonIgnore
+	private List<Postagem> postagens = new ArrayList<Postagem>();
 	
 	private TipoPostagem tipo;
 
-	public Postagem() {
+	public Resposta() {
 	}
 
-	public Postagem(Integer id, String texto, Date data, Usuario usuario, TipoPostagem tipo) {
+	public Resposta(Integer id, String texto, Date data, Usuario m1, TipoPostagem tipo) {
 		super();
 		this.id = id;
 		this.texto = texto;
 		this.data = data;
-		this.usuario = usuario;
+		this.usuario = m1;
 		this.tipo = tipo;
 	}
 
@@ -62,7 +64,7 @@ public class Postagem implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Postagem other = (Postagem) obj;
+		Resposta other = (Resposta) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -93,14 +95,6 @@ public class Postagem implements Serializable {
 
 	public void setData(Date data) {
 		this.data = data;
-	}
-
-	public List<Resposta> getResposta() {
-		return resposta;
-	}
-
-	public void setResposta(List<Resposta> resposta) {
-		this.resposta = resposta;
 	}
 
 	public Usuario getUsuario() {

@@ -1,14 +1,18 @@
 package com.giovanijfc.sistemadepostagens.service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.giovanijfc.sistemadepostagens.domain.Amizade;
 import com.giovanijfc.sistemadepostagens.domain.Membro;
 import com.giovanijfc.sistemadepostagens.domain.Usuario;
 import com.giovanijfc.sistemadepostagens.domain.enums.Cargo;
 import com.giovanijfc.sistemadepostagens.dto.UsuarioDTO;
+import com.giovanijfc.sistemadepostagens.repository.AmizadeRepository;
 import com.giovanijfc.sistemadepostagens.repository.MembroRepository;
 import com.giovanijfc.sistemadepostagens.repository.UsuarioRepository;
 
@@ -21,23 +25,25 @@ public class UsuarioService {
 	private MembroRepository membroRepo;
 	@Autowired
 	private MembroService membroSer;
+	@Autowired
+	private AmizadeRepository amizadeRepo;
 
 	public Usuario buscarPorEmail(String email) {
-		Usuario obj = usuarioRepo.findByEmail(email);
-		if (obj == null) {
+		Usuario usuario = usuarioRepo.findByEmail(email);
+		if (usuario == null) {
 			System.out.println("Usuario não encontrado!");
 		}
-		return obj;
+		return usuario;
 	}
 
-	public Usuario add(UsuarioDTO objDto) {
-		return new Usuario(null, objDto.getNome(), objDto.getDescricao(), objDto.getEmail(), objDto.getSenha(), Cargo.USUÁRIO,
-				new Date(System.currentTimeMillis()));
+	public Usuario add(UsuarioDTO usuarioDto) {
+		return new Usuario(null, usuarioDto.getNome(), usuarioDto.getDescricao(), usuarioDto.getEmail(), usuarioDto.getSenha(),
+				Cargo.USUÁRIO, new Date(System.currentTimeMillis()));
 	}
 
-	public Usuario adicionar(UsuarioDTO objDto) {
-		Usuario user = add(objDto);
-		Membro membro = membroSer.add(objDto.getNome(), objDto.getEmail());
+	public Usuario adicionar(UsuarioDTO usuarioDto) {
+		Usuario user = add(usuarioDto);
+		Membro membro = membroSer.add(usuarioDto.getNome(), usuarioDto.getEmail());
 		if (user == null) {
 			System.out.println("Dados incorretos!");
 		} else {
@@ -51,27 +57,63 @@ public class UsuarioService {
 		usuarioRepo.deleteById(id);
 	}
 
-	public void atualizarDTO(UsuarioDTO objDto, Usuario obj) {
-		Membro membro = membroRepo.findByEmail(obj.getEmail());
+	public void atualizarDTO(UsuarioDTO usuarioDto, Usuario usuario) {
+		Membro membro = membroRepo.findByEmail(usuario.getEmail());
 
-		if (objDto.getNome() != null || obj.getNome() != "") {
-			obj.setNome(objDto.getNome());
-			membro.setNome(objDto.getNome());
+		if (usuarioDto.getNome() != null || usuarioDto.getNome() != "") {
+			usuario.setNome(usuarioDto.getNome());
+			membro.setNome(usuarioDto.getNome());
 		}
-		if (objDto.getEmail() != null || obj.getEmail() != "") {
-			obj.setEmail(objDto.getEmail());
-			membro.setEmail(objDto.getEmail());
+		if (usuarioDto.getEmail() != null || usuarioDto.getEmail() != "") {
+			usuario.setEmail(usuarioDto.getEmail());
+			membro.setEmail(usuarioDto.getEmail());
 		}
-		if (objDto.getSenha() != null || objDto.getSenha() != "") {
-			obj.setSenha(objDto.getSenha());
+		if (usuarioDto.getSenha() != null || usuarioDto.getSenha() != "") {
+			usuario.setSenha(usuarioDto.getSenha());
 		}
-		if (objDto.getDescricao() != null || objDto.getDescricao() != "") {
-			obj.setDescricao(objDto.getDescricao());
+		if (usuarioDto.getDescricao() != null || usuarioDto.getDescricao() != "") {
+			usuario.setDescricao(usuarioDto.getDescricao());
 		}
-		if (objDto.getUrlFotoPerfil() != null || objDto.getUrlFotoPerfil() != "") {
-			obj.setUrlFotoPerfil(objDto.getUrlFotoPerfil());
+		if (usuarioDto.getUrlFotoPerfil() != null || usuarioDto.getUrlFotoPerfil() != "") {
+			usuario.setUrlFotoPerfil(usuarioDto.getUrlFotoPerfil());
 		}
 		usuarioRepo.flush();
 		membroRepo.flush();
+	}
+
+	public Usuario adicionarAmigo(Integer idUsuarioSecundario, Integer idUsuarioPrincipal) {
+		Usuario userPrincipal = usuarioRepo.findById(idUsuarioPrincipal).orElse(null);
+		Usuario userSecundario = usuarioRepo.findById(idUsuarioSecundario).orElse(null);
+		List<Amizade> listaAmizades = usuarioRepo.findById(idUsuarioPrincipal).get().getAmizade().stream().filter(
+				x -> x.getUsuarioSecundario().getId() == userSecundario.getId()).collect(Collectors.toList());
+		Amizade amizade = new Amizade(null, userPrincipal, userSecundario);
+		if ((userPrincipal != null && userSecundario != null) && (userPrincipal != userSecundario) && (amizade != null)
+				&& (listaAmizades.isEmpty())) {
+			amizadeRepo.save(amizade);
+			userPrincipal.getAmizade().add(amizade);
+			userSecundario.getAmizade().add(amizade);
+			usuarioRepo.flush();
+		} else {
+			System.out.println("ERROR!");
+		}
+		return userPrincipal;
+	}
+
+	public Usuario removerAmigo(Integer idUsuarioSecundario, Integer idUsuarioPrincipal) {
+		Usuario userPrincipal = usuarioRepo.findById(idUsuarioPrincipal).orElse(null);
+		Usuario userSecundario = usuarioRepo.findById(idUsuarioSecundario).orElse(null);
+		List<Amizade> listaAmizades = usuarioRepo.findById(idUsuarioPrincipal).get().getAmizade().stream().filter(
+				x -> x.getUsuarioSecundario().getId() == userSecundario.getId()).collect(Collectors.toList());
+		if ((userPrincipal != null && userSecundario != null) && (userPrincipal != userSecundario) && (listaAmizades.get(0)!= null)
+				&& (!listaAmizades.isEmpty())) {
+			userPrincipal.getAmizade().remove(listaAmizades.get(0));
+			userSecundario.getAmizade().remove(listaAmizades.get(0));
+			amizadeRepo.delete(listaAmizades.get(0));
+			amizadeRepo.flush();
+			usuarioRepo.flush();
+		} else {
+			System.out.println("ERROR!");
+		}
+		return userPrincipal;
 	}
 }

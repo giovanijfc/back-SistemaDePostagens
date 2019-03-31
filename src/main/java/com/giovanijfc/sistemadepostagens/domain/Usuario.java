@@ -7,10 +7,10 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 
@@ -42,9 +42,8 @@ public class Usuario implements Serializable {
 
 	private Cargo cargo;
 
-	@OneToMany
-	@JoinColumn(name = "amigos_id")
-	private List<Usuario> amigos = new ArrayList<Usuario>();
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="usuarioPrincipal")
+	private List<Amizade> amizade = new ArrayList<Amizade>();
 
 	public Usuario() {
 
@@ -118,12 +117,12 @@ public class Usuario implements Serializable {
 		this.senha = senha;
 	}
 
-	public List<Usuario> getAmigos() {
-		return amigos;
+	public List<Amizade> getAmizade() {
+		return amizade;
 	}
 
-	public void setAmigos(List<Usuario> amigos) {
-		this.amigos = amigos;
+	public void setAmizade(List<Amizade> amizade) {
+		this.amizade = amizade;
 	}
 
 	public String getUrlFotoPerfil() {

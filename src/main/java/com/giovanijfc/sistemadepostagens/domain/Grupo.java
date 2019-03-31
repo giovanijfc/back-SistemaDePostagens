@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
@@ -23,24 +24,26 @@ public class Grupo implements Serializable {
 
 	@Column(unique = true)
 	private String nome;
-	private String descriçao;
+	private String descricao;
 	private String urlFotoGrupo;
 
 	private Date entrada;
 
 	@OneToMany
-	private List<Topico> topicos = new ArrayList<Topico>();
+	@JoinColumn(name="topico_id")
+	private List<TopicoGrupo> topicos = new ArrayList<TopicoGrupo>();
 
+	@Column(unique = true)
 	@ManyToMany
-	private List<Membro> membro = new ArrayList<Membro>();
+	private List<Membro> membros = new ArrayList<Membro>();
 
 	public Grupo() {
 	}
 
-	public Grupo(Integer id, String descriçao, String urlFotoGrupo, String nome, Date entrada ) {
+	public Grupo(Integer id, String descriçao, String urlFotoGrupo, String nome, Date entrada) {
 		super();
 		this.id = id;
-		this.descriçao = descriçao;
+		this.descricao = descriçao;
 		this.urlFotoGrupo = urlFotoGrupo;
 		this.nome = nome;
 		this.entrada = entrada;
@@ -79,12 +82,12 @@ public class Grupo implements Serializable {
 		this.id = id;
 	}
 
-	public String getDescriçao() {
-		return descriçao;
+	public String getDescricao() {
+		return descricao;
 	}
 
-	public void setDescriçao(String descriçao) {
-		this.descriçao = descriçao;
+	public void setDescricao(String descriçao) {
+		this.descricao = descriçao;
 	}
 
 	public String getUrlFotoGrupo() {
@@ -95,20 +98,12 @@ public class Grupo implements Serializable {
 		this.urlFotoGrupo = urlFotoGrupo;
 	}
 
-	public List<Topico> getTopicos() {
+	public List<TopicoGrupo> getTopicos() {
 		return topicos;
 	}
 
-	public void setTopicos(List<Topico> topicos) {
+	public void setTopicos(List<TopicoGrupo> topicos) {
 		this.topicos = topicos;
-	}
-
-	public List<Membro> getUsuarios() {
-		return membro;
-	}
-
-	public void setUsuarios(List<Membro> usuarios) {
-		this.membro = usuarios;
 	}
 
 	public Date getEntrada() {
@@ -128,10 +123,10 @@ public class Grupo implements Serializable {
 	}
 
 	public List<Membro> getMembro() {
-		return membro;
+		return membros;
 	}
 
 	public void setMembro(List<Membro> membro) {
-		this.membro = membro;
+		this.membros = membro;
 	}
 }

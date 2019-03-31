@@ -32,28 +32,28 @@ public class MembroService {
 		return new Membro(null, nome, email, new Date(System.currentTimeMillis()), Cargo.USUÁRIO);
 	}
 
-	public Membro adicionar(Membro obj) {
-		Membro membro = add(obj.getNome(), obj.getEmail());
-		if (membro == null) {
+	public Membro adicionar(Membro membro) {
+		Membro membro1 = add(membro.getNome(), membro.getEmail());
+		if (membro1 == null) {
 			System.out.println("Dados incorretos!");
 		} else {
 			membroRepo.save(membro);
 		}
-		return membro;
+		return membro1;
 	}
 
 	public void delete(Integer id) {
 		membroRepo.deleteById(id);
 	}
 
-	public void atualizar(MembroDTO objDto, String email) {
+	public void atualizar(MembroDTO membroDto, String email) {
 		Membro membro = buscarPorEmail(email);
-		if (objDto.getCargo() != membro.getCargo() && objDto.getCargo() != null) {
-			membro.setCargo(objDto.getCargo());
+		if (membroDto.getCargo() != membro.getCargo() && membroDto.getCargo() != null) {
+			membro.setCargo(membroDto.getCargo());
 		}
-		if (objDto.getNomeDoGrupo() != null || objDto.getNomeDoGrupo() != "") {
-			if (objDto.getNomeDoGrupo().contains("-")) {
-				String nomeDoGrupo = objDto.getNomeDoGrupo().substring(1);
+		if (membroDto.getNomeDoGrupo() != null || membroDto.getNomeDoGrupo() != "") {
+			if (membroDto.getNomeDoGrupo().contains("-")) {
+				String nomeDoGrupo = membroDto.getNomeDoGrupo().substring(1);
 				Grupo g1 = grupoRepo.findByNome(nomeDoGrupo);
 				Membro m1 = g1.getMembro().stream().filter(x -> x == membro).findFirst().orElse(null);
 				if (m1 != null) {
@@ -62,8 +62,8 @@ public class MembroService {
 				} else {
 				}
 			} else {
-				Grupo g1 = grupoRepo.findByNome(objDto.getNomeDoGrupo());
-				Membro m1 = g1.getMembro().stream().filter(x -> x.getEmail() == email).findFirst().orElse(null);
+				Grupo g1 = grupoRepo.findByNome(membroDto.getNomeDoGrupo());
+				Membro m1 = g1.getMembro().stream().filter(x -> x == membro).findFirst().orElse(null);
 				if (m1 == null) {
 					g1.getMembro().add(membro);
 					membro.getGrupo().add(g1);
@@ -74,5 +74,4 @@ public class MembroService {
 		membroRepo.flush();
 		grupoRepo.flush();
 	}
-
 }
