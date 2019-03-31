@@ -16,31 +16,33 @@ import com.giovanijfc.sistemadepostagens.dto.UsuarioDTO;
 import com.giovanijfc.sistemadepostagens.service.UsuarioService;
 
 @RestController
-@RequestMapping(value="/user")
+@RequestMapping(value = "/user")
 public class UsuarioResource {
-	
+
 	@Autowired
 	private UsuarioService usuarioSer;
-	
-	@RequestMapping(value="/buscar", method=RequestMethod.GET)
-	public ResponseEntity<Usuario> buscarPorEmail(@PathParam(value="email") String email){
+
+	@RequestMapping(value = "/buscar", method = RequestMethod.GET)
+	public ResponseEntity<Usuario> buscarPorEmail(@PathParam(value = "email") String email) {
 		Usuario obj = usuarioSer.buscarPorEmail(email);
 		return ResponseEntity.ok().body(obj);
 	}
-	
-	@RequestMapping(value="/adicionar", method=RequestMethod.POST)
-	public ResponseEntity<Usuario> adicionar(@RequestBody Usuario obj){
-		usuarioSer.adicionar(obj);
+
+	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
+	public ResponseEntity<Usuario> adicionar(@RequestBody UsuarioDTO objDto) {
+		usuarioSer.adicionar(objDto);
 		return ResponseEntity.noContent().build();
 	}
-	
-	@RequestMapping(value="/deletar/{id}", method=RequestMethod.DELETE)
-	public ResponseEntity<Usuario> deletar(@PathVariable Integer id){
+
+	@RequestMapping(value = "/deletar/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Usuario> deletar(@PathVariable Integer id) {
 		usuarioSer.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-	@RequestMapping(value="/atualizar", method=RequestMethod.PUT)
-	public ResponseEntity<Usuario> atualizar(@RequestBody UsuarioDTO objDto, @RequestParam(value="email")String email){
+
+	@RequestMapping(value = "/atualizar", method = RequestMethod.PUT)
+	public ResponseEntity<Usuario> atualizar(@RequestBody UsuarioDTO objDto,
+			@RequestParam(value = "email") String email) {
 		Usuario user = usuarioSer.buscarPorEmail(email);
 		usuarioSer.atualizarDTO(objDto, user);
 		return ResponseEntity.noContent().build();

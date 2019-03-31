@@ -8,4 +8,6 @@ import com.giovanijfc.sistemadepostagens.domain.Grupo;
 @Repository
 public interface GrupoRepository extends JpaRepository<Grupo, Integer>{
 
+	Grupo findByNome(String nome);
+	
 }

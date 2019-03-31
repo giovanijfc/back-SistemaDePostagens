@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.Email;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.giovanijfc.sistemadepostagens.domain.enums.Cargo;
 
 @Entity
@@ -33,6 +34,7 @@ public class Membro implements Serializable{
 		
 	private Cargo cargo;
 	
+	@JsonIgnore
 	@ManyToMany(mappedBy="membro")
 	private List<Grupo> grupo = new ArrayList<Grupo>();
 

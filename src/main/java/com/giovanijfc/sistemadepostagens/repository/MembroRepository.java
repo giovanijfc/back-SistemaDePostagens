@@ -8,4 +8,5 @@ import com.giovanijfc.sistemadepostagens.domain.Membro;
 @Repository
 public interface MembroRepository extends JpaRepository<Membro, Integer>{
 
+	Membro findByEmail(String email);
 }
