@@ -19,14 +19,20 @@ public class TopicoResource {
 
 	@Autowired
 	private TopicoService topicoSer;
-
-	@RequestMapping(value = "/buscarTodosUser", method = RequestMethod.GET)
+	
+	@RequestMapping(value = "/buscar", method = RequestMethod.GET)
+	public ResponseEntity<Topico> buscar(@RequestParam(value = "idTopico") Integer idTopico) {
+		return ResponseEntity.ok().body(topicoSer.buscar(idTopico));
+	}
+	
+	@RequestMapping(value = "/buscarTodosPostUser", method = RequestMethod.GET)
 	public ResponseEntity<List<Topico>> buscarTodos(@RequestParam(value = "idUser") Integer idUser) {
 		return ResponseEntity.ok().body(topicoSer.buscarTodosPostSeu(idUser));
 	}
 
-	@RequestMapping(value="/buscarTodosAmizade", method=RequestMethod.GET)
+	@RequestMapping(value="/buscarTodosPostAmigos", method=RequestMethod.GET)
 	public ResponseEntity<List<Postagem>> buscarTodosAmizade(@RequestParam(value="idUser") Integer idUser){
 			return ResponseEntity.ok().body(topicoSer.buscarTodosAmizade(idUser));
 	}
+	
 }

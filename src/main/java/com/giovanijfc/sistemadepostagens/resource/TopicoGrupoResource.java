@@ -23,4 +23,9 @@ public class TopicoGrupoResource {
 	public ResponseEntity<List<TopicoGrupo>> buscarTodos(@RequestParam(value = "idGrupo") Integer idGrupo) {
 		return ResponseEntity.ok().body(topicoSer.buscarTodosGrupo(idGrupo));
 	}
+	
+	@RequestMapping(value = "/buscar", method = RequestMethod.GET)
+	public ResponseEntity<TopicoGrupo> buscar(@RequestParam(value = "idTopico") Integer idTopico) {
+		return ResponseEntity.ok().body(topicoSer.buscar(idTopico));
+	}
 }

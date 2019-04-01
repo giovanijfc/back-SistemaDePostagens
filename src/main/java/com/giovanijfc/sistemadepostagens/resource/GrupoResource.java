@@ -31,33 +31,33 @@ public class GrupoResource {
 		return ResponseEntity.ok().body(obj);
 	}
 
-	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
+	@RequestMapping(value = "/adicionarGrupo", method = RequestMethod.POST)
 	public ResponseEntity<Grupo> adicionar(@RequestBody Grupo grupo) {
 		grupoSer.adicionar(grupo);
 		return ResponseEntity.noContent().build();
 	}
 
-	@RequestMapping(value = "/deletar/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/deletarGrupo/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Grupo> deletar(@PathVariable Integer id) {
 		grupoSer.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 
-	@RequestMapping(value = "/atualizar", method = RequestMethod.PUT)
+	@RequestMapping(value = "/atualizarGrupo", method = RequestMethod.PUT)
 	public ResponseEntity<Usuario> atualizar(@RequestBody Grupo grupo,
 			@RequestParam(value = "idGroup") Integer idGrupo) {
 		grupoSer.atualizar(grupo, idGrupo);
 		return ResponseEntity.noContent().build();
 	}
 
-	@RequestMapping(value = "/adicionarpost/{idGrupo}", method = RequestMethod.POST)
+	@RequestMapping(value = "/adicionarPost/{idGrupo}", method = RequestMethod.POST)
 	public ResponseEntity<Usuario> adicionarPostagem(@RequestBody PostagemGrupo postagem,
 			@RequestParam(value = "idUser") Integer idUser, @PathVariable Integer idGrupo) {
 		grupoSer.adicionarPostagem(postagem, idUser, idGrupo);
 		return ResponseEntity.noContent().build();
 	}
 
-	@RequestMapping(value = "/responde/{idGrupo}/{idPostP}", method = RequestMethod.POST)
+	@RequestMapping(value = "/responderPost/{idGrupo}/{idPostP}", method = RequestMethod.POST)
 	public ResponseEntity<Postagem> adicionarResposta(@RequestBody RespostaGroup respostaGroup,
 			@RequestParam(value = "idUser") Integer idUser, @PathVariable Integer idPostP,
 			@PathVariable Integer idGrupo) {

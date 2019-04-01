@@ -22,7 +22,7 @@ public class PostagemResource {
 	@Autowired
 	private PostagemService postagemSer;
 
-	@RequestMapping(value = "/buscartodos", method = RequestMethod.GET)
+	@RequestMapping(value = "/buscarTodos", method = RequestMethod.GET)
 	public ResponseEntity<List<Postagem>> buscarTodo() {
 		List<Postagem> list = postagemSer.buscarTodos();
 		return ResponseEntity.ok().body(list);
@@ -34,7 +34,7 @@ public class PostagemResource {
 		return ResponseEntity.ok().body(postagem);
 	}
 
-	@RequestMapping(value = "/adicionar", method = RequestMethod.POST)
+	@RequestMapping(value = "/adicionarPostagem", method = RequestMethod.POST)
 	public ResponseEntity<Postagem> adicionar(@RequestBody Postagem postagem, @RequestParam(value = "id") Integer idUser) {
 		postagemSer.adicionar(postagem, idUser);
 		return ResponseEntity.noContent().build();
@@ -51,13 +51,13 @@ public class PostagemResource {
 		return ResponseEntity.noContent().build();
 	}
 
-	@RequestMapping(value="/editarPost", method=RequestMethod.PUT)
+	@RequestMapping(value="/editarPostagem", method=RequestMethod.PUT)
 	public ResponseEntity<Postagem> atualizar(@RequestBody String texto, @RequestParam(value="id")Integer id){
 		postagemSer.atualizar(texto, id);
 		return ResponseEntity.noContent().build();
 	}
 
-	@RequestMapping(value="/responder/{idPostP}", method=RequestMethod.POST)
+	@RequestMapping(value="/responderPost/{idPostP}", method=RequestMethod.POST)
 	public ResponseEntity<Postagem> adicionarResposta(@RequestBody Resposta resposta, @RequestParam(value="idUser")Integer idUser, @PathVariable Integer idPostP){
 		postagemSer.adicionarResposta(resposta, idUser, idPostP);
 		return ResponseEntity.noContent().build();

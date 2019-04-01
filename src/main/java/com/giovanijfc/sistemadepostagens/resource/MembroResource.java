@@ -29,18 +29,18 @@ public class MembroResource {
 		return ResponseEntity.ok().body(obj);
 	}
 	
-	@RequestMapping(value="/adicionar", method=RequestMethod.POST)
+	@RequestMapping(value="/adicionarMembro", method=RequestMethod.POST)
 	public ResponseEntity<Membro> adicionar(@RequestBody Membro membroDto){
 		membroSer.adicionar(membroDto);
 		return ResponseEntity.noContent().build();
 	}
 	
-	@RequestMapping(value="/deletar/{id}", method=RequestMethod.DELETE)
+	@RequestMapping(value="/deletarMembro/{id}", method=RequestMethod.DELETE)
 	public ResponseEntity<Membro> deletar(@PathVariable Integer id){
 		membroSer.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-	@RequestMapping(value="/atualizar", method=RequestMethod.PUT)
+	@RequestMapping(value="/atualizarMembro", method=RequestMethod.PUT)
 	public ResponseEntity<Usuario> atualizar(@RequestBody MembroDTO membroDto, @RequestParam(value="email")String email){
 		membroSer.atualizar(membroDto, email);
 		return ResponseEntity.noContent().build();

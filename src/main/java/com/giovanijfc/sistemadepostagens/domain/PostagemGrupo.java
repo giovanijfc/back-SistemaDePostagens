@@ -32,7 +32,7 @@ public class PostagemGrupo implements Serializable {
 	private List<RespostaGroup> resposta = new ArrayList<RespostaGroup>();
 
 	@OneToOne
-	private Membro membros;
+	private Membro membro;
 
 	private TipoPostagem tipo;
 
@@ -45,7 +45,7 @@ public class PostagemGrupo implements Serializable {
 		this.texto = texto;
 		this.data = data;
 		this.hora = hora;
-		this.membros = m1;
+		this.membro = m1;
 		this.tipo = tipo;
 	}
 
@@ -115,11 +115,11 @@ public class PostagemGrupo implements Serializable {
 	} 
 
 	public Membro getMembros() {
-		return membros;
+		return membro;
 	}
 
 	public void setMembros(Membro membro) {
-		this.membros = membro;
+		this.membro = membro;
 	}
 
 	public TipoPostagem getTipo() {

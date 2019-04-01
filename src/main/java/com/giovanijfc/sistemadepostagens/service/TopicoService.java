@@ -28,6 +28,10 @@ public class TopicoService {
 	@Autowired
 	private TopicoRepository topicoRepo;
 
+	public Topico buscar(Integer idTopico) {
+		return topicoRepo.findById(idTopico).orElse(null);
+	}
+	
 	public List<Topico> buscarTodosPostSeu(Integer idUser) {
 		List<Topico> listaTopicos = topicoRepo.findAll();
 		listaTopicos = listaTopicos.stream().filter(t -> t.getPostPrincipal().getUsuario().getId() == idUser)
