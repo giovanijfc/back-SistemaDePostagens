@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 public class Amizade implements Serializable{
@@ -18,22 +18,26 @@ public class Amizade implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
+	@JsonIgnoreProperties({"amizade"})
 	@OneToOne
-	@JsonIgnore
 	private Usuario usuarioPrincipal;
 	
+	@JsonIgnoreProperties({"amizade"})
 	@OneToOne
 	private Usuario usuarioSecundario;
+	
+	private String data;
 	
 	public Amizade() {
 		
 	}
 	
-	public Amizade(Integer id, Usuario usuarioPrincipal, Usuario usuarioSecundario) {
+	public Amizade(Integer id, Usuario usuarioPrincipal, Usuario usuarioSecundario, String data) {
 		super();
 		this.id = id;
 		this.usuarioPrincipal = usuarioPrincipal;
 		this.usuarioSecundario = usuarioSecundario;
+		this.data = data;
 	}
 
 	public Integer getId() {
@@ -58,5 +62,13 @@ public class Amizade implements Serializable{
 
 	public void setUsuarioSecundario(Usuario usuarioSecundario) {
 		this.usuarioSecundario = usuarioSecundario;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
 	}
 }

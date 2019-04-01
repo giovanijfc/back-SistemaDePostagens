@@ -2,7 +2,6 @@ package com.giovanijfc.sistemadepostagens.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -27,7 +26,7 @@ public class Grupo implements Serializable {
 	private String descricao;
 	private String urlFotoGrupo;
 
-	private Date entrada;
+	private String criado;
 
 	@OneToMany
 	@JoinColumn(name="topico_id")
@@ -40,13 +39,13 @@ public class Grupo implements Serializable {
 	public Grupo() {
 	}
 
-	public Grupo(Integer id, String descriçao, String urlFotoGrupo, String nome, Date entrada) {
+	public Grupo(Integer id, String descriçao, String urlFotoGrupo, String nome, String entrada) {
 		super();
 		this.id = id;
 		this.descricao = descriçao;
 		this.urlFotoGrupo = urlFotoGrupo;
 		this.nome = nome;
-		this.entrada = entrada;
+		this.criado = entrada;
 	}
 
 	@Override
@@ -106,12 +105,12 @@ public class Grupo implements Serializable {
 		this.topicos = topicos;
 	}
 
-	public Date getEntrada() {
-		return entrada;
+	public String getEntrada() {
+		return criado;
 	}
 
-	public void setEntrada(Date entrada) {
-		this.entrada = entrada;
+	public void setEntrada(String entrada) {
+		this.criado = entrada;
 	}
 
 	public String getNome() {
@@ -129,4 +128,5 @@ public class Grupo implements Serializable {
 	public void setMembro(List<Membro> membro) {
 		this.membros = membro;
 	}
+	
 }

@@ -2,7 +2,6 @@ package com.giovanijfc.sistemadepostagens.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -24,24 +23,27 @@ public class Postagem implements Serializable {
 	private Integer id;
 
 	private String texto;
-	private Date data;
+	private String data;
 
-	@ManyToMany(fetch=FetchType.LAZY)
+	private String hora;
+
+	@ManyToMany(fetch = FetchType.LAZY)
 	private List<Resposta> resposta = new ArrayList<Resposta>();
 
 	@OneToOne
 	private Usuario usuario;
-	
+
 	private TipoPostagem tipo;
 
 	public Postagem() {
 	}
 
-	public Postagem(Integer id, String texto, Date data, Usuario usuario, TipoPostagem tipo) {
+	public Postagem(Integer id, String texto, String data, String hora, Usuario usuario, TipoPostagem tipo) {
 		super();
 		this.id = id;
 		this.texto = texto;
 		this.data = data;
+		this.hora = hora;
 		this.usuario = usuario;
 		this.tipo = tipo;
 	}
@@ -87,12 +89,20 @@ public class Postagem implements Serializable {
 		this.texto = texto;
 	}
 
-	public Date getData() {
+	public String getData() {
 		return data;
 	}
 
-	public void setData(Date data) {
+	public void setData(String data) {
 		this.data = data;
+	}
+
+	public String getHora() {
+		return hora;
+	}
+
+	public void setHora(String hora) {
+		this.hora = hora;
 	}
 
 	public List<Resposta> getResposta() {

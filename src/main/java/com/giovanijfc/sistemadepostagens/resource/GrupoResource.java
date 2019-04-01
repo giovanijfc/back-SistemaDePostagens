@@ -19,7 +19,7 @@ import com.giovanijfc.sistemadepostagens.domain.Usuario;
 import com.giovanijfc.sistemadepostagens.service.GrupoService;
 
 @RestController
-@RequestMapping(value = "/group")
+@RequestMapping(value = "/grupo")
 public class GrupoResource {
 
 	@Autowired
@@ -52,13 +52,36 @@ public class GrupoResource {
 
 	@RequestMapping(value = "/adicionarpost/{idGrupo}", method = RequestMethod.POST)
 	public ResponseEntity<Usuario> adicionarPostagem(@RequestBody PostagemGrupo postagem,
-			@RequestParam(value = "id") Integer idUser, @PathVariable Integer idGrupo) {
+			@RequestParam(value = "idUser") Integer idUser, @PathVariable Integer idGrupo) {
 		grupoSer.adicionarPostagem(postagem, idUser, idGrupo);
 		return ResponseEntity.noContent().build();
 	}
-	@RequestMapping(value="/responder/{idPostP}", method=RequestMethod.POST)
-	public ResponseEntity<Postagem> adicionarResposta(@RequestBody RespostaGroup respostaGroup, @RequestParam(value="idUser")Integer idUser, @PathVariable Integer idPostP){
-		grupoSer.adicionarResposta(respostaGroup, idUser, idPostP);
+
+	@RequestMapping(value = "/responde/{idGrupo}/{idPostP}", method = RequestMethod.POST)
+	public ResponseEntity<Postagem> adicionarResposta(@RequestBody RespostaGroup respostaGroup,
+			@RequestParam(value = "idUser") Integer idUser, @PathVariable Integer idPostP,
+			@PathVariable Integer idGrupo) {
+		grupoSer.adicionarResposta(respostaGroup, idUser, idPostP, idGrupo);
+		return ResponseEntity.noContent().build();
+	}
+	@RequestMapping(value="/editarPostagem", method=RequestMethod.PUT)
+	public ResponseEntity<Postagem> atualizarPostagem(@RequestBody String texto, @RequestParam(value="id")Integer id){
+		grupoSer.atualizarResposta(texto, id);
+		return ResponseEntity.noContent().build();
+	}
+	@RequestMapping(value="/editarResposta", method=RequestMethod.PUT)
+	public ResponseEntity<Postagem> atualizarResposta(@RequestBody String texto, @RequestParam(value="id")Integer id){
+		grupoSer.atualizarResposta(texto, id);
+		return ResponseEntity.noContent().build();
+	}
+	@RequestMapping(value = "/deletarPostagem", method = RequestMethod.DELETE)
+	public ResponseEntity<Postagem> deletarPostagem(@RequestParam(value = "id") Integer id) {
+		grupoSer.deletePostagem(id);
+		return ResponseEntity.noContent().build();
+	}
+	@RequestMapping(value = "/deletarResposta", method = RequestMethod.DELETE)
+	public ResponseEntity<Postagem> deletarResposta(@RequestParam(value = "id") Integer id) {
+		grupoSer.deleteResposta(id);
 		return ResponseEntity.noContent().build();
 	}
 }

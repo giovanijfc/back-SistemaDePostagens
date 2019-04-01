@@ -16,7 +16,7 @@ import com.giovanijfc.sistemadepostagens.dto.UsuarioDTO;
 import com.giovanijfc.sistemadepostagens.service.UsuarioService;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/usuario")
 public class UsuarioResource {
 
 	@Autowired

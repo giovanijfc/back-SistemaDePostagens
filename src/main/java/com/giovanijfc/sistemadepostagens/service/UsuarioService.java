@@ -1,5 +1,7 @@
 package com.giovanijfc.sistemadepostagens.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +30,9 @@ public class UsuarioService {
 	@Autowired
 	private AmizadeRepository amizadeRepo;
 
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+	
 	public Usuario buscarPorEmail(String email) {
 		Usuario usuario = usuarioRepo.findByEmail(email);
 		if (usuario == null) {
@@ -37,8 +42,8 @@ public class UsuarioService {
 	}
 
 	public Usuario add(UsuarioDTO usuarioDto) {
-		return new Usuario(null, usuarioDto.getNome(), usuarioDto.getDescricao(), usuarioDto.getEmail(), usuarioDto.getSenha(),
-				Cargo.USUÁRIO, new Date(System.currentTimeMillis()));
+		return new Usuario(null, usuarioDto.getNome(), usuarioDto.getDescricao(), usuarioDto.getEmail(),
+				usuarioDto.getSenha(), Cargo.USUÁRIO, sdf.format(new Date(System.currentTimeMillis())));
 	}
 
 	public Usuario adicionar(UsuarioDTO usuarioDto) {
@@ -84,14 +89,17 @@ public class UsuarioService {
 	public Usuario adicionarAmigo(Integer idUsuarioSecundario, Integer idUsuarioPrincipal) {
 		Usuario userPrincipal = usuarioRepo.findById(idUsuarioPrincipal).orElse(null);
 		Usuario userSecundario = usuarioRepo.findById(idUsuarioSecundario).orElse(null);
-		List<Amizade> listaAmizades = usuarioRepo.findById(idUsuarioPrincipal).get().getAmizade().stream().filter(
-				x -> x.getUsuarioSecundario().getId() == userSecundario.getId()).collect(Collectors.toList());
-		Amizade amizade = new Amizade(null, userPrincipal, userSecundario);
+		List<Amizade> listaAmizades = usuarioRepo.findById(idUsuarioPrincipal).get().getAmizade().stream()
+				.filter(x -> x.getUsuarioSecundario().getId() == userSecundario.getId()).collect(Collectors.toList());
+		List<Amizade> listaAmizades2 = usuarioRepo.findById(idUsuarioSecundario).get().getAmizade().stream()
+				.filter(x -> x.getUsuarioSecundario().getId() == userSecundario.getId()).collect(Collectors.toList());
+		Amizade amizade = new Amizade(null, userPrincipal, userSecundario, sdf.format(new Date(System.currentTimeMillis())));
+		Amizade amizade2 = new Amizade(null, userSecundario, userPrincipal, sdf.format(new Date(System.currentTimeMillis())));
 		if ((userPrincipal != null && userSecundario != null) && (userPrincipal != userSecundario) && (amizade != null)
-				&& (listaAmizades.isEmpty())) {
-			amizadeRepo.save(amizade);
+				&& (listaAmizades.isEmpty()) && (listaAmizades2.isEmpty())) {
+			amizadeRepo.saveAll(Arrays.asList(amizade, amizade2));
 			userPrincipal.getAmizade().add(amizade);
-			userSecundario.getAmizade().add(amizade);
+			userSecundario.getAmizade().add(amizade2);
 			usuarioRepo.flush();
 		} else {
 			System.out.println("ERROR!");
@@ -102,12 +110,14 @@ public class UsuarioService {
 	public Usuario removerAmigo(Integer idUsuarioSecundario, Integer idUsuarioPrincipal) {
 		Usuario userPrincipal = usuarioRepo.findById(idUsuarioPrincipal).orElse(null);
 		Usuario userSecundario = usuarioRepo.findById(idUsuarioSecundario).orElse(null);
-		List<Amizade> listaAmizades = usuarioRepo.findById(idUsuarioPrincipal).get().getAmizade().stream().filter(
-				x -> x.getUsuarioSecundario().getId() == userSecundario.getId()).collect(Collectors.toList());
-		if ((userPrincipal != null && userSecundario != null) && (userPrincipal != userSecundario) && (listaAmizades.get(0)!= null)
-				&& (!listaAmizades.isEmpty())) {
+		List<Amizade> listaAmizades = usuarioRepo.findById(idUsuarioPrincipal).get().getAmizade().stream()
+				.filter(x -> x.getUsuarioSecundario().getId() == userSecundario.getId()).collect(Collectors.toList());
+		List<Amizade> listaAmizades2 = usuarioRepo.findById(idUsuarioSecundario).get().getAmizade().stream()
+				.filter(x -> x.getUsuarioSecundario().getId() == userPrincipal.getId()).collect(Collectors.toList());
+		if ((userPrincipal != null && userSecundario != null) && (userPrincipal != userSecundario)
+				&& (!listaAmizades.isEmpty()) && (!listaAmizades2.isEmpty())) {
 			userPrincipal.getAmizade().remove(listaAmizades.get(0));
-			userSecundario.getAmizade().remove(listaAmizades.get(0));
+			userSecundario.getAmizade().remove(listaAmizades2.get(0));
 			amizadeRepo.delete(listaAmizades.get(0));
 			amizadeRepo.flush();
 			usuarioRepo.flush();

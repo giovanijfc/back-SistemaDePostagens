@@ -16,7 +16,7 @@ import com.giovanijfc.sistemadepostagens.domain.Resposta;
 import com.giovanijfc.sistemadepostagens.service.PostagemService;
 
 @RestController
-@RequestMapping(value = "/post")
+@RequestMapping(value = "/postagem")
 public class PostagemResource {
 
 	@Autowired
@@ -40,13 +40,18 @@ public class PostagemResource {
 		return ResponseEntity.noContent().build();
 	}
 
-	@RequestMapping(value = "/deletar", method = RequestMethod.DELETE)
-	public ResponseEntity<Postagem> deletar(@RequestParam(value = "id") Integer id) {
-		postagemSer.delete(id);
+	@RequestMapping(value = "/deletarPostagem", method = RequestMethod.DELETE)
+	public ResponseEntity<Postagem> deletarPostagem(@RequestParam(value = "id") Integer id) {
+		postagemSer.deletePostagem(id);
+		return ResponseEntity.noContent().build();
+	}
+	@RequestMapping(value = "/deletarResposta", method = RequestMethod.DELETE)
+	public ResponseEntity<Postagem> deletarResposta(@RequestParam(value = "id") Integer id) {
+		postagemSer.deleteResposta(id);
 		return ResponseEntity.noContent().build();
 	}
 
-	@RequestMapping(value="/editar", method=RequestMethod.PUT)
+	@RequestMapping(value="/editarPost", method=RequestMethod.PUT)
 	public ResponseEntity<Postagem> atualizar(@RequestBody String texto, @RequestParam(value="id")Integer id){
 		postagemSer.atualizar(texto, id);
 		return ResponseEntity.noContent().build();
@@ -55,6 +60,12 @@ public class PostagemResource {
 	@RequestMapping(value="/responder/{idPostP}", method=RequestMethod.POST)
 	public ResponseEntity<Postagem> adicionarResposta(@RequestBody Resposta resposta, @RequestParam(value="idUser")Integer idUser, @PathVariable Integer idPostP){
 		postagemSer.adicionarResposta(resposta, idUser, idPostP);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@RequestMapping(value="/editarResposta", method=RequestMethod.PUT)
+	public ResponseEntity<Postagem> atualizarResposta(@RequestBody String texto, @RequestParam(value="id")Integer id){
+		postagemSer.atualizarResposta(texto, id);
 		return ResponseEntity.noContent().build();
 	}
 }

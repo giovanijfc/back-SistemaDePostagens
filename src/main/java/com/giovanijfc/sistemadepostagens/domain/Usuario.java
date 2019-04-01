@@ -2,7 +2,6 @@ package com.giovanijfc.sistemadepostagens.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -15,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.giovanijfc.sistemadepostagens.domain.enums.Cargo;
 
 @Entity
@@ -34,7 +34,7 @@ public class Usuario implements Serializable {
 	@JsonIgnore
 	private String senha;
 
-	private Date entrada;
+	private String dataEntrada;
 
 	private String descricao;
 
@@ -42,14 +42,25 @@ public class Usuario implements Serializable {
 
 	private Cargo cargo;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="usuarioPrincipal")
+	@JsonProperty("amizade")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuarioPrincipal")
 	private List<Amizade> amizade = new ArrayList<Amizade>();
+
+	public Usuario(Usuario usuario) {
+		this.id = usuario.getId();
+		this.nome = usuario.getNome();
+		this.email = usuario.getEmail();
+		this.senha = usuario.getSenha();
+		this.descricao = usuario.getDescricao();
+		this.cargo = usuario.getCargo();
+		this.dataEntrada = usuario.getDataEntrada();
+	}
 
 	public Usuario() {
 
 	}
 
-	public Usuario(Integer id, String nome, String descricao, String email, String senha, Cargo cargo, Date date) {
+	public Usuario(Integer id, String nome, String descricao, String email, String senha, Cargo cargo, String date) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -57,7 +68,7 @@ public class Usuario implements Serializable {
 		this.senha = senha;
 		this.descricao = descricao;
 		this.cargo = cargo;
-		this.entrada = date;
+		this.dataEntrada = date;
 	}
 
 	@Override
@@ -141,20 +152,12 @@ public class Usuario implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public Date getCriado() {
-		return entrada;
+	public String getDataEntrada() {
+		return dataEntrada;
 	}
 
-	public void setCriado(Date criado) {
-		this.entrada = criado;
-	}
-
-	public Date getEntrada() {
-		return entrada;
-	}
-
-	public void setEntrada(Date entrada) {
-		this.entrada = entrada;
+	public void setDataEntrada(String dataEntrada) {
+		this.dataEntrada = dataEntrada;
 	}
 
 	public Cargo getCargo() {

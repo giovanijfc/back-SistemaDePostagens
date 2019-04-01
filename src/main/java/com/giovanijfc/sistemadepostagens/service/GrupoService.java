@@ -1,6 +1,9 @@
 package com.giovanijfc.sistemadepostagens.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,9 @@ public class GrupoService {
 	@Autowired
 	private RespostaGrupoRepository respostaRepo;
 
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	SimpleDateFormat sdff = new SimpleDateFormat("HH:mm:ss");
+
 	public Grupo buscarPorNome(String nome) {
 		Grupo grupo = grupoRepo.findByNome(nome);
 		if (grupo == null) {
@@ -41,7 +47,7 @@ public class GrupoService {
 
 	public Grupo add(Grupo grupo) {
 		return new Grupo(null, grupo.getDescricao(), grupo.getUrlFotoGrupo(), grupo.getNome(),
-				new Date(System.currentTimeMillis()));
+				sdf.format(new Date(System.currentTimeMillis())));
 	}
 
 	public Grupo adicionar(Grupo grupo) {
@@ -72,51 +78,95 @@ public class GrupoService {
 		grupoRepo.flush();
 	}
 
-	public TopicoGrupo add(PostagemGrupo postagem, Integer id) {
+	public TopicoGrupo add(PostagemGrupo postagem, Integer id, Grupo grupo) {
 		Membro membro = membroRepo.findById(id).orElse(null);
-		TopicoGrupo topico = new TopicoGrupo(null);
-		PostagemGrupo postagem1 = new PostagemGrupo(null, postagem.getTexto(), new Date(System.currentTimeMillis()),
+		PostagemGrupo postagem1 = new PostagemGrupo(null, postagem.getTexto(),
+				sdf.format(new Date(System.currentTimeMillis())), sdff.format(new Date(System.currentTimeMillis())),
 				membro, TipoPostagem.POSTAGEM);
-		if (postagem1.getTexto() != null || postagem1.getTexto() != "") {
+		List<Membro> membros = grupo.getMembro().stream().filter(x -> x == membro).collect(Collectors.toList());
+		if (postagem1.getTexto() != null && postagem1.getTexto() != "" && !membros.isEmpty()) {
+			TopicoGrupo topico = new TopicoGrupo(null);
 			postagemRepo.save(postagem1);
 			topico.setPostPrincipal(postagem1);
 			topicoRepo.save(topico);
 			return topico;
 		}
-
 		return null;
 	}
 
-	public TopicoGrupo adicionar(PostagemGrupo postagem, Integer idUser) {
-		;
-		TopicoGrupo topico = add(postagem, idUser);
-		return topico;
+	public TopicoGrupo adicionar(PostagemGrupo postagem, Integer idUser, Grupo grupo) {
+		TopicoGrupo topico = add(postagem, idUser, grupo);
+		if (topico != null) {
+			return topico;
+		}
+		return null;
 	}
 
 	public void adicionarPostagem(PostagemGrupo postagem, Integer idUser, Integer idGrupo) {
-		TopicoGrupo topico = adicionar(postagem, idUser);
 		Grupo grupo = grupoRepo.findById(idGrupo).orElse(null);
-		grupo.getTopicos().add(topico);
-		grupoRepo.flush();
+		TopicoGrupo topico = adicionar(postagem, idUser, grupo);
+		if (topico != null) {
+			grupo.getTopicos().add(topico);
+			grupoRepo.flush();
+		} else {
+			System.out.println("Não foi possivel postar");
+		}
 	}
 
-	public RespostaGroup addResposta(RespostaGroup respostaGroup, Integer id) {
-		Membro m1 = membroRepo.findById(id).orElse(null);
-		RespostaGroup resposta1 = new RespostaGroup(null, respostaGroup.getTexto(), new Date(System.currentTimeMillis()), m1,
-				TipoPostagem.RESPOSTA);
-		return resposta1;
+	public RespostaGroup addResposta(RespostaGroup respostaGroup, Integer id, Grupo grupo) {
+		Membro membro = membroRepo.findById(id).orElse(null);
+		List<Membro> membros = grupo.getMembro().stream().filter(x -> x == membro).collect(Collectors.toList());
+		if (!membros.isEmpty()) {
+			RespostaGroup resposta1 = new RespostaGroup(null, respostaGroup.getTexto(),
+					sdf.format(new Date(System.currentTimeMillis())), sdff.format(new Date(System.currentTimeMillis())),
+					membro, TipoPostagem.RESPOSTA);
+			return resposta1;
+		} else {
+			return null;
+		}
 	}
 
-	public RespostaGroup adicionarResposta(RespostaGroup respostaGroup, Integer idMember, Integer idPost) {
+	public RespostaGroup adicionarResposta(RespostaGroup respostaGroup, Integer idMember, Integer idPost,
+			Integer idGroup) {
+		Grupo grupo = grupoRepo.findById(idGroup).orElse(null);
 		PostagemGrupo postP = postagemRepo.findById(idPost).orElse(null);
-		RespostaGroup resposta1 = addResposta(respostaGroup, idMember);
-		if(resposta1.getTexto() == null || resposta1.getTexto() == "") {
-			System.out.println("POST INCORRETO!");
-		}else {
+		RespostaGroup resposta1 = addResposta(respostaGroup, idMember, grupo);
+		if (resposta1 == null) {
+			System.out.println("Não faz parte do grupo");
+		} else if (resposta1.getTexto() == null || resposta1.getTexto() == "") {
+			System.out.println("post incorreto");
+		} else {
 			respostaRepo.save(resposta1);
 			postP.getResposta().add(resposta1);
 			postagemRepo.flush();
 		}
 		return resposta1;
+	}
+	public void deletePostagem(Integer idTopico) {
+		PostagemGrupo postagem = topicoRepo.getOne(idTopico).getPostPrincipal();
+		postagemRepo.delete(postagem);
+		topicoRepo.deleteById(idTopico);
+		topicoRepo.flush();
+		postagemRepo.flush();
+	}
+	
+	public void deleteResposta(Integer id) {
+		respostaRepo.deleteById(id);
+		respostaRepo.flush();
+	}
+	
+	public void atualizar(String texto, Integer id) {
+		PostagemGrupo postagem = postagemRepo.findById(id).orElse(null);
+		if (texto != null || texto != "") {
+			postagem.setTexto(texto);
+			postagemRepo.flush();
+		}
+	}
+	public void atualizarResposta(String texto, Integer idResp) {
+		RespostaGroup p1 = respostaRepo.findById(idResp).orElse(null);
+		if (texto != null || texto != "") {
+			p1.setTexto(texto);
+			postagemRepo.flush();
+		}
 	}
 }

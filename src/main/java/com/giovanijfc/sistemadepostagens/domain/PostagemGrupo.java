@@ -2,7 +2,6 @@ package com.giovanijfc.sistemadepostagens.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -25,7 +24,8 @@ public class PostagemGrupo implements Serializable {
 	private Integer id;
 
 	private String texto;
-	private Date data;
+	private String data;
+	private String hora;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name="resposta_id")
@@ -39,11 +39,12 @@ public class PostagemGrupo implements Serializable {
 	public PostagemGrupo() {
 	}
 
-	public PostagemGrupo(Integer id, String texto, Date data, Membro m1, TipoPostagem tipo) {
+	public PostagemGrupo(Integer id, String texto, String data, String hora,Membro m1, TipoPostagem tipo) {
 		super();
 		this.id = id;
 		this.texto = texto;
 		this.data = data;
+		this.hora = hora;
 		this.membros = m1;
 		this.tipo = tipo;
 	}
@@ -89,12 +90,20 @@ public class PostagemGrupo implements Serializable {
 		this.texto = texto;
 	}
 
-	public Date getData() {
+	public String getData() {
 		return data;
 	}
 
-	public void setData(Date data) {
+	public void setData(String data) {
 		this.data = data;
+	}
+
+	public String getHora() {
+		return hora;
+	}
+
+	public void setHora(String hora) {
+		this.hora = hora;
 	}
 
 	public List<RespostaGroup> getResposta() {

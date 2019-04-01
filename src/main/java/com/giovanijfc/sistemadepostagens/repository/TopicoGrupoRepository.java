@@ -8,4 +8,5 @@ import com.giovanijfc.sistemadepostagens.domain.TopicoGrupo;
 @Repository
 public interface TopicoGrupoRepository extends JpaRepository<TopicoGrupo, Integer>{
 
+	
 }

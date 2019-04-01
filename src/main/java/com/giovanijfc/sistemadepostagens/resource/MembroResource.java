@@ -17,7 +17,7 @@ import com.giovanijfc.sistemadepostagens.dto.MembroDTO;
 import com.giovanijfc.sistemadepostagens.service.MembroService;
 
 @RestController
-@RequestMapping(value="/member")
+@RequestMapping(value="/membro")
 public class MembroResource {
 	
 	@Autowired
