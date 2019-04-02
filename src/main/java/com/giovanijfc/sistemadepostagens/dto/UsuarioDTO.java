@@ -22,9 +22,11 @@ public class UsuarioDTO implements Serializable{
 	private String urlFotoPerfil;
 
 	private Cargo cargo;
+	
+	private String palavraChave;
 
 	public UsuarioDTO(Integer id, String nome, @Email String email, String senha, String descricao,
-			String urlFotoPerfil, Cargo cargo) {
+			String urlFotoPerfil, Cargo cargo, String palavraChave) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -33,6 +35,7 @@ public class UsuarioDTO implements Serializable{
 		this.descricao = descricao;
 		this.urlFotoPerfil = urlFotoPerfil;
 		this.cargo = cargo;
+		this.palavraChave = palavraChave;
 	}
 
 	public Integer getId() {
@@ -90,6 +93,12 @@ public class UsuarioDTO implements Serializable{
 	public void setCargo(Cargo cargo) {
 		this.cargo = cargo;
 	}
-	
-	
+
+	public String getPalavraChave() {
+		return palavraChave;
+	}
+
+	public void setPalavraChave(String palavraChave) {
+		this.palavraChave = palavraChave;
+	}
 }

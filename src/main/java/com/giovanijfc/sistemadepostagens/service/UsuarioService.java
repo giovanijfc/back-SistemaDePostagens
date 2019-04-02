@@ -19,6 +19,9 @@ import com.giovanijfc.sistemadepostagens.repository.AmizadeRepository;
 import com.giovanijfc.sistemadepostagens.repository.MembroRepository;
 import com.giovanijfc.sistemadepostagens.repository.UsuarioRepository;
 import com.giovanijfc.sistemadepostagens.security.UserSS;
+import com.giovanijfc.sistemadepostagens.service.exceptions.DataIntegrityException;
+import com.giovanijfc.sistemadepostagens.service.exceptions.ForbiddenException;
+import com.giovanijfc.sistemadepostagens.service.exceptions.ObjectNotFoundException;
 
 @Service
 public class UsuarioService {
@@ -40,25 +43,25 @@ public class UsuarioService {
 	public Usuario buscarPorEmail(String email) {
 		UserSS user = UserService.authenticated();
 		if(user.getUsername() != email || user == null || !user.hasRole(Cargo.ADMINISTRADOR)) {
-			System.out.println("ACESSO NEGADO");
+			throw new ForbiddenException("Acesso negado, não foi possivel continuar com essa requisição!");
 		}
 		Usuario usuario = usuarioRepo.findByEmail(email);
 		if (usuario == null) {
-			System.out.println("Usuario não encontrado!");
+			throw new ObjectNotFoundException("Usuario não encontrado!");
 		}
 		return usuario;
 	}
 
 	public Usuario add(UsuarioDTO usuarioDto) {
 		return new Usuario(null, usuarioDto.getNome(), usuarioDto.getDescricao(), usuarioDto.getEmail(),
-				pe.encode(usuarioDto.getSenha()), sdf.format(new Date(System.currentTimeMillis())));
+				pe.encode(usuarioDto.getSenha()), sdf.format(new Date(System.currentTimeMillis())), pe.encode(usuarioDto.getPalavraChave()));
 	}
 
 	public Usuario adicionar(UsuarioDTO usuarioDto) {
 		Usuario user = add(usuarioDto);
 		Membro membro = membroSer.add(usuarioDto.getNome(), usuarioDto.getEmail());
 		if (user == null) {
-			System.out.println("Dados incorretos!");
+			throw new DataIntegrityException("Dados incorretos, não foi possivel continuar!");
 		} else {
 			user.addPerfil(Cargo.USUÁRIO);
 			usuarioRepo.save(user);
@@ -111,7 +114,7 @@ public class UsuarioService {
 			userSecundario.getAmizade().add(amizade2);
 			usuarioRepo.flush();
 		} else {
-			System.out.println("ERROR!");
+			throw new ForbiddenException("******ERROR******");
 		}
 		return userPrincipal;
 	}
@@ -131,8 +134,13 @@ public class UsuarioService {
 			amizadeRepo.flush();
 			usuarioRepo.flush();
 		} else {
-			System.out.println("ERROR!");
+			throw new ForbiddenException("******ERROR******");
 		}
 		return userPrincipal;
+	}
+	public String changePass(String senha, Usuario user) {
+		user.setSenha(pe.encode(senha));
+		usuarioRepo.flush();
+		return "Senha trocada com sucesso";
 	}
 }

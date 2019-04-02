@@ -19,6 +19,9 @@ import com.giovanijfc.sistemadepostagens.repository.MembroRepository;
 import com.giovanijfc.sistemadepostagens.repository.PostagemGrupoRepository;
 import com.giovanijfc.sistemadepostagens.repository.RespostaGrupoRepository;
 import com.giovanijfc.sistemadepostagens.repository.TopicoGrupoRepository;
+import com.giovanijfc.sistemadepostagens.service.exceptions.DataIntegrityException;
+import com.giovanijfc.sistemadepostagens.service.exceptions.ForbiddenException;
+import com.giovanijfc.sistemadepostagens.service.exceptions.ObjectNotFoundException;
 
 @Service
 public class GrupoService {
@@ -40,7 +43,7 @@ public class GrupoService {
 	public Grupo buscarPorNome(String nome) {
 		Grupo grupo = grupoRepo.findByNome(nome);
 		if (grupo == null) {
-			System.out.println("Grupo não encontrado!");
+			throw new ObjectNotFoundException("Não foi possivel encontrar esse grupo, tente novamente!");
 		}
 		return grupo;
 	}
@@ -53,7 +56,7 @@ public class GrupoService {
 	public Grupo adicionar(Grupo grupo) {
 		Grupo grupo1 = add(grupo);
 		if (grupo1 == null) {
-			System.out.println("Dados incorretos!");
+			throw new DataIntegrityException("Não foi possivel adicionar esse grupo, tente novamente");
 		} else {
 			grupoRepo.save(grupo1);
 		}
@@ -109,7 +112,7 @@ public class GrupoService {
 			grupo.getTopicos().add(topico);
 			grupoRepo.flush();
 		} else {
-			System.out.println("Não foi possivel postar");
+			throw new ForbiddenException("Não foi possivel fazer essa postagem, tente novamente!");
 		}
 	}
 
@@ -122,7 +125,7 @@ public class GrupoService {
 					membro, TipoPostagem.RESPOSTA);
 			return resposta1;
 		} else {
-			return null;
+			throw new ForbiddenException("Você não faz parte desse grupo para tentar responder!");
 		}
 	}
 
@@ -132,9 +135,8 @@ public class GrupoService {
 		PostagemGrupo postP = postagemRepo.findById(idPost).orElse(null);
 		RespostaGroup resposta1 = addResposta(respostaGroup, idMember, grupo);
 		if (resposta1 == null) {
-			System.out.println("Não faz parte do grupo");
 		} else if (resposta1.getTexto() == null || resposta1.getTexto() == "") {
-			System.out.println("post incorreto");
+			throw new DataIntegrityException("Resposta incorreta!");
 		} else {
 			respostaRepo.save(resposta1);
 			postP.getResposta().add(resposta1);

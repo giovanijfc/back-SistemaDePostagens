@@ -17,6 +17,8 @@ import com.giovanijfc.sistemadepostagens.repository.PostagemRepository;
 import com.giovanijfc.sistemadepostagens.repository.RespostaRepository;
 import com.giovanijfc.sistemadepostagens.repository.TopicoRepository;
 import com.giovanijfc.sistemadepostagens.repository.UsuarioRepository;
+import com.giovanijfc.sistemadepostagens.service.exceptions.DataIntegrityException;
+import com.giovanijfc.sistemadepostagens.service.exceptions.ObjectNotFoundException;
 
 @Service
 public class PostagemService {
@@ -36,7 +38,7 @@ public class PostagemService {
 	public Postagem buscarPorIdPost(Integer id) {
 		Postagem obj = postagemRepo.findById(id).orElse(null);
 		if (obj == null) {
-			System.out.println("Postagem não encontrado!");
+			throw new ObjectNotFoundException("Postagem não foi encontrada!");
 		}
 		return obj;
 	}
@@ -60,7 +62,7 @@ public class PostagemService {
 		Topico topico = add(postagem, id).getTopico();
 		topicoRepo.save(topico);
 		if (post.getTexto() == null || post.getTexto() == "") {
-			System.out.println("Post incorretos!");
+			throw new DataIntegrityException("Dados da postagem incorreta, tente novamente!");
 		} else {
 			postagemRepo.save(post);
 			topico.setPostPrincipal(post);
@@ -84,9 +86,11 @@ public class PostagemService {
 
 	public void atualizar(String texto, Integer id) {
 		Postagem postagem = postagemRepo.findById(id).orElse(null);
-		if (texto != null || texto != "") {
+		if (texto != null || texto != "" && postagem != null) {
 			postagem.setTexto(texto);
 			postagemRepo.flush();
+		}else {
+			throw new DataIntegrityException("Não foi possivel editar essa postagem, tente novamente!");
 		}
 	}
 
@@ -101,7 +105,7 @@ public class PostagemService {
 		Postagem postP = postagemRepo.findById(IdPost).orElse(null);
 		Resposta resposta1 = addResposta(resposta, idUser);
 		if (resposta1.getTexto() == null || resposta1.getTexto() == "" || postP.getTipo() == TipoPostagem.RESPOSTA) {
-			System.out.println("Post incorretos!");
+			throw new DataIntegrityException("Não foi possivel adicionar a resposta, tente novamente!");
 		} else {
 			respostaRepo.save(resposta1);
 			postP.getResposta().add(resposta1);
@@ -112,9 +116,11 @@ public class PostagemService {
 
 	public void atualizarResposta(String texto, Integer idResp) {
 		Resposta p1 = respostaRepo.findById(idResp).orElse(null);
-		if (texto != null || texto != "") {
+		if (texto != null || texto != "" && p1 != null) {
 			p1.setTexto(texto);
 			postagemRepo.flush();
+		}else {
+			throw new DataIntegrityException("Não foi possivel editar a respostam, tente novamente!");
 		}
 	}
 }

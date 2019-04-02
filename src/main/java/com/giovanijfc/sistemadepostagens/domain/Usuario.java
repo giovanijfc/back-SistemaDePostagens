@@ -44,6 +44,8 @@ public class Usuario implements Serializable {
 	private String descricao;
 
 	private String urlFotoPerfil;
+	
+	private String palavraChave;
 
 	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable(name="CARGOS")
@@ -60,13 +62,14 @@ public class Usuario implements Serializable {
 		this.senha = usuario.getSenha();
 		this.descricao = usuario.getDescricao();
 		this.dataEntrada = usuario.getDataEntrada();
+		this.palavraChave = usuario.getPalavraChave();
 	}
 
 	public Usuario() {
 		addPerfil(Cargo.USUÁRIO);
 	}
 
-	public Usuario(Integer id, String nome, String descricao, String email, String senha, String date) {
+	public Usuario(Integer id, String nome, String descricao, String email, String senha, String date, String palavraChave) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -74,6 +77,7 @@ public class Usuario implements Serializable {
 		this.senha = senha;
 		this.descricao = descricao;
 		this.dataEntrada = date;
+		this.palavraChave = palavraChave;
 		addPerfil(Cargo.USUÁRIO);
 	}
 
@@ -172,4 +176,13 @@ public class Usuario implements Serializable {
 	public void addPerfil(Cargo cargo) {
 		cargos.add(cargo.getCod());
 	}
+
+	public String getPalavraChave() {
+		return palavraChave;
+	}
+
+	public void setPalavraChave(String palavraChave) {
+		this.palavraChave = palavraChave;
+	}
+	
 }

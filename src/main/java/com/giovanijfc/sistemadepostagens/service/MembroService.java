@@ -11,6 +11,8 @@ import com.giovanijfc.sistemadepostagens.domain.enums.Cargo;
 import com.giovanijfc.sistemadepostagens.dto.MembroDTO;
 import com.giovanijfc.sistemadepostagens.repository.GrupoRepository;
 import com.giovanijfc.sistemadepostagens.repository.MembroRepository;
+import com.giovanijfc.sistemadepostagens.service.exceptions.ForbiddenException;
+import com.giovanijfc.sistemadepostagens.service.exceptions.ObjectNotFoundException;
 
 @Service
 public class MembroService {
@@ -23,7 +25,7 @@ public class MembroService {
 	public Membro buscarPorEmail(String email) {
 		Membro obj = membroRepo.findByEmail(email);
 		if (obj == null) {
-			System.out.println("Membro não encontrado!");
+			throw new ObjectNotFoundException("Não foi possivel buscar esse membro!");
 		}
 		return obj;
 	}
@@ -35,7 +37,7 @@ public class MembroService {
 	public Membro adicionar(Membro membro) {
 		Membro membro1 = add(membro.getNome(), membro.getEmail());
 		if (membro1 == null) {
-			System.out.println("Dados incorretos!");
+			throw new ObjectNotFoundException("Membro não existe, tente novamente!");
 		} else {
 			membroRepo.save(membro);
 		}
@@ -60,6 +62,7 @@ public class MembroService {
 					g1.getMembro().remove(membro);
 					membro.getGrupo().remove(g1);
 				} else {
+					throw new ForbiddenException("Não foi possível entrar nesse grupo tente novamente!");
 				}
 			} else {
 				Grupo g1 = grupoRepo.findByNome(membroDto.getNomeDoGrupo());
@@ -68,6 +71,7 @@ public class MembroService {
 					g1.getMembro().add(membro);
 					membro.getGrupo().add(g1);
 				} else {
+					throw new ForbiddenException("Não foi possivel sair desse grupo tente novamente!");
 				}
 			}
 		}
