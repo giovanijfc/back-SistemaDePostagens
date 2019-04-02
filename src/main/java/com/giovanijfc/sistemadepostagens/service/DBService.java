@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.giovanijfc.sistemadepostagens.domain.Grupo;
@@ -30,8 +30,10 @@ import com.giovanijfc.sistemadepostagens.repository.TopicoRepository;
 import com.giovanijfc.sistemadepostagens.repository.UsuarioRepository;
 
 @Service
-public class DBService implements CommandLineRunner {
+public class DBService{
 
+	@Autowired
+	private BCryptPasswordEncoder pe;
 	@Autowired
 	private UsuarioRepository usuarioRepo;
 	@Autowired
@@ -51,21 +53,23 @@ public class DBService implements CommandLineRunner {
 	@Autowired
 	private RespostaRepository respostaRepo;
 
-	@Override
-	public void run(String... args) throws Exception {
+	public void instantiateDataBase() {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdff = new SimpleDateFormat("HH:mm:ss");
 
-		Usuario u1 = new Usuario(null, "Giovani Fonseca", "", "giovanijfc@gmail.com", "123456", Cargo.USUÁRIO,
+		Usuario u1 = new Usuario(null, "Giovani Fonseca", "", "giovanijfc@gmail.com", pe.encode("123456"), 
 				sdf.format(new Date(System.currentTimeMillis())));
-		Usuario u2 = new Usuario(null, "Emerson Fonseca", "", "emerson@gmail.com", "123456", Cargo.USUÁRIO,
+		Usuario u2 = new Usuario(null, "Emerson Fonseca", "", "emerson@gmail.com", pe.encode("123456"), 
 				sdf.format(new Date(System.currentTimeMillis())));
-		Usuario u3 = new Usuario(null, "Gisele Fonseca", "", "giselle@gmail.com", "123456", Cargo.ADMINISTRADOR,
+		Usuario u3 = new Usuario(null, "Gisele Fonseca", "", "giselle@gmail.com", pe.encode("123456"), 
 				sdf.format(new Date(System.currentTimeMillis())));
-		Usuario u4 = new Usuario(null, "Edson Fonseca", "", "edson@gmail.com", "123456", Cargo.MODERADOR,
+		Usuario u4 = new Usuario(null, "Edson Fonseca", "", "edson@gmail.com", pe.encode("123456"), 
 				sdf.format(new Date(System.currentTimeMillis())));
 
+		u1.addPerfil(Cargo.ADMINISTRADOR);	
+		u4.addPerfil(Cargo.ADMINISTRADOR);	
+		
 		usuarioRepo.saveAll(Arrays.asList(u1, u2, u3, u4));
 
 		Grupo g1 = new Grupo(null, "Um grupo da nossa pequena família", "", "Família Fonseca",

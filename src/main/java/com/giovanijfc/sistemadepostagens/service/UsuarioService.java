@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.giovanijfc.sistemadepostagens.domain.Amizade;
@@ -17,6 +18,7 @@ import com.giovanijfc.sistemadepostagens.dto.UsuarioDTO;
 import com.giovanijfc.sistemadepostagens.repository.AmizadeRepository;
 import com.giovanijfc.sistemadepostagens.repository.MembroRepository;
 import com.giovanijfc.sistemadepostagens.repository.UsuarioRepository;
+import com.giovanijfc.sistemadepostagens.security.UserSS;
 
 @Service
 public class UsuarioService {
@@ -29,11 +31,17 @@ public class UsuarioService {
 	private MembroService membroSer;
 	@Autowired
 	private AmizadeRepository amizadeRepo;
+	@Autowired
+	private BCryptPasswordEncoder pe;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	
 	public Usuario buscarPorEmail(String email) {
+		UserSS user = UserService.authenticated();
+		if(user.getUsername() != email || user == null || !user.hasRole(Cargo.ADMINISTRADOR)) {
+			System.out.println("ACESSO NEGADO");
+		}
 		Usuario usuario = usuarioRepo.findByEmail(email);
 		if (usuario == null) {
 			System.out.println("Usuario não encontrado!");
@@ -43,7 +51,7 @@ public class UsuarioService {
 
 	public Usuario add(UsuarioDTO usuarioDto) {
 		return new Usuario(null, usuarioDto.getNome(), usuarioDto.getDescricao(), usuarioDto.getEmail(),
-				usuarioDto.getSenha(), Cargo.USUÁRIO, sdf.format(new Date(System.currentTimeMillis())));
+				pe.encode(usuarioDto.getSenha()), sdf.format(new Date(System.currentTimeMillis())));
 	}
 
 	public Usuario adicionar(UsuarioDTO usuarioDto) {
@@ -52,6 +60,7 @@ public class UsuarioService {
 		if (user == null) {
 			System.out.println("Dados incorretos!");
 		} else {
+			user.addPerfil(Cargo.USUÁRIO);
 			usuarioRepo.save(user);
 			membroRepo.save(membro);
 		}

@@ -2,9 +2,14 @@ package com.giovanijfc.sistemadepostagens.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -40,7 +45,9 @@ public class Usuario implements Serializable {
 
 	private String urlFotoPerfil;
 
-	private Cargo cargo;
+	@ElementCollection(fetch=FetchType.EAGER)
+	@CollectionTable(name="CARGOS")
+	private Set<Integer> cargos = new HashSet<Integer>();
 
 	@JsonProperty("amizade")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuarioPrincipal")
@@ -52,23 +59,22 @@ public class Usuario implements Serializable {
 		this.email = usuario.getEmail();
 		this.senha = usuario.getSenha();
 		this.descricao = usuario.getDescricao();
-		this.cargo = usuario.getCargo();
 		this.dataEntrada = usuario.getDataEntrada();
 	}
 
 	public Usuario() {
-
+		addPerfil(Cargo.USUÁRIO);
 	}
 
-	public Usuario(Integer id, String nome, String descricao, String email, String senha, Cargo cargo, String date) {
+	public Usuario(Integer id, String nome, String descricao, String email, String senha, String date) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.senha = senha;
 		this.descricao = descricao;
-		this.cargo = cargo;
 		this.dataEntrada = date;
+		addPerfil(Cargo.USUÁRIO);
 	}
 
 	@Override
@@ -159,12 +165,11 @@ public class Usuario implements Serializable {
 	public void setDataEntrada(String dataEntrada) {
 		this.dataEntrada = dataEntrada;
 	}
-
-	public Cargo getCargo() {
-		return cargo;
+	
+	public Set<Cargo> getCargos(){
+		return cargos.stream().map(x -> Cargo.toEnum(x)).collect(Collectors.toSet());
 	}
-
-	public void setCargo(Cargo cargo) {
-		this.cargo = cargo;
+	public void addPerfil(Cargo cargo) {
+		cargos.add(cargo.getCod());
 	}
 }

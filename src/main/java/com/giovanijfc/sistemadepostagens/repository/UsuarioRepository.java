@@ -7,9 +7,6 @@ import com.giovanijfc.sistemadepostagens.domain.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
-
-	Usuario findByEmail(String email);
 	
-
-	
+	Usuario findByEmail(String email);	
 }
