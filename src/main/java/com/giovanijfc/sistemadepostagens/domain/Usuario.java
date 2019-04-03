@@ -69,13 +69,12 @@ public class Usuario implements Serializable {
 		addPerfil(Cargo.USUÁRIO);
 	}
 
-	public Usuario(Integer id, String nome, String descricao, String email, String senha, String date, String palavraChave) {
+	public Usuario(Integer id, String nome, String email, String senha, String date, String palavraChave) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.senha = senha;
-		this.descricao = descricao;
 		this.dataEntrada = date;
 		this.palavraChave = palavraChave;
 		addPerfil(Cargo.USUÁRIO);

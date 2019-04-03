@@ -39,10 +39,9 @@ public class UsuarioService {
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-	
 	public Usuario buscarPorEmail(String email) {
 		UserSS user = UserService.authenticated();
-		if(user.getUsername() != email || user == null || !user.hasRole(Cargo.ADMINISTRADOR)) {
+		if (user.getUsername() != email || user == null || !user.hasRole(Cargo.ADMINISTRADOR)) {
 			throw new ForbiddenException("Acesso negado, não foi possivel continuar com essa requisição!");
 		}
 		Usuario usuario = usuarioRepo.findByEmail(email);
@@ -53,21 +52,27 @@ public class UsuarioService {
 	}
 
 	public Usuario add(UsuarioDTO usuarioDto) {
-		return new Usuario(null, usuarioDto.getNome(), usuarioDto.getDescricao(), usuarioDto.getEmail(),
-				pe.encode(usuarioDto.getSenha()), sdf.format(new Date(System.currentTimeMillis())), pe.encode(usuarioDto.getPalavraChave()));
+		return new Usuario(null, usuarioDto.getNome(), usuarioDto.getEmail(), pe.encode(usuarioDto.getSenha()),
+				sdf.format(new Date(System.currentTimeMillis())), pe.encode(usuarioDto.getPalavraChave()));
 	}
 
 	public Usuario adicionar(UsuarioDTO usuarioDto) {
-		Usuario user = add(usuarioDto);
-		Membro membro = membroSer.add(usuarioDto.getNome(), usuarioDto.getEmail());
-		if (user == null) {
-			throw new DataIntegrityException("Dados incorretos, não foi possivel continuar!");
+		Usuario userTeste = usuarioRepo.findByEmail(usuarioDto.getEmail());
+		if (userTeste == null) {
+			Usuario user = add(usuarioDto);
+			Membro membro = membroSer.add(usuarioDto.getNome(), usuarioDto.getEmail());
+			if (user == null) {
+				throw new DataIntegrityException("Dados incorretos, não foi possivel continuar!");
+			} else {
+				user.addPerfil(Cargo.USUÁRIO);
+				usuarioRepo.save(user);
+				membroRepo.save(membro);
+			}
+			return user;
+
 		} else {
-			user.addPerfil(Cargo.USUÁRIO);
-			usuarioRepo.save(user);
-			membroRepo.save(membro);
+			throw new DataIntegrityException("Email já cadastrado!");
 		}
-		return user;
 	}
 
 	public void delete(Integer id) {
@@ -105,8 +110,10 @@ public class UsuarioService {
 				.filter(x -> x.getUsuarioSecundario().getId() == userSecundario.getId()).collect(Collectors.toList());
 		List<Amizade> listaAmizades2 = usuarioRepo.findById(idUsuarioSecundario).get().getAmizade().stream()
 				.filter(x -> x.getUsuarioSecundario().getId() == userSecundario.getId()).collect(Collectors.toList());
-		Amizade amizade = new Amizade(null, userPrincipal, userSecundario, sdf.format(new Date(System.currentTimeMillis())));
-		Amizade amizade2 = new Amizade(null, userSecundario, userPrincipal, sdf.format(new Date(System.currentTimeMillis())));
+		Amizade amizade = new Amizade(null, userPrincipal, userSecundario,
+				sdf.format(new Date(System.currentTimeMillis())));
+		Amizade amizade2 = new Amizade(null, userSecundario, userPrincipal,
+				sdf.format(new Date(System.currentTimeMillis())));
 		if ((userPrincipal != null && userSecundario != null) && (userPrincipal != userSecundario) && (amizade != null)
 				&& (listaAmizades.isEmpty()) && (listaAmizades2.isEmpty())) {
 			amizadeRepo.saveAll(Arrays.asList(amizade, amizade2));
@@ -138,9 +145,10 @@ public class UsuarioService {
 		}
 		return userPrincipal;
 	}
+
 	public String changePass(String senha, Usuario user) {
 		user.setSenha(pe.encode(senha));
 		usuarioRepo.flush();
-		return "Senha trocada com sucesso";
+		return "Senha alterada com sucesso!";
 	}
 }

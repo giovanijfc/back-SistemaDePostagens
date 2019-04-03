@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,7 +44,8 @@ public class AuthResource {
 		
 	}
 
-	@RequestMapping(value = "/forgot", method = RequestMethod.PUT)
+	@CrossOrigin
+	@RequestMapping(value = "/esqueciASenha", method = RequestMethod.PUT)
 	public String  forgot(@RequestBody ChangedNewPassDTO objDto) {
 		Usuario user = repo.findByEmail(objDto.getEmail());
 		if (user == null) {
@@ -51,8 +53,8 @@ public class AuthResource {
 		}
 		if ((pe.matches(objDto.getPalavraChave(), user.getPalavraChave()))
 				&& objDto.getEmail().equals(user.getEmail())) {
-			return usuarioService.changePass(objDto.getNewSenha(), user);
+			return usuarioService.changePass(objDto.getNovaSenha(), user);
 		}
-		throw new ForbiddenException("Falha na tentativa de autenticação!");
+		throw new ForbiddenException("Palavra chave incorreta!");
 	}
 }

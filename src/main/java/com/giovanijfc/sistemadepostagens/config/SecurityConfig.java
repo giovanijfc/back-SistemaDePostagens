@@ -48,7 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			"/usuario/**"
 	};
 	private static final String[] POST_PUBLIC_MATCHERS = {
-			"/usuario/adicionarUsuario/**"
+			"/usuario/adicionarUsuario"
+	};
+	private static final String[] PUT_PUBLIC_MATCHERS = {
+			"/auth/esqueciASenha"
 	};
 	
 	@Override
@@ -64,6 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(PUBLIC_MATCHERS).permitAll()
 			.antMatchers(HttpMethod.GET, GET_PUBLIC_MATCHERS).permitAll()
 			.antMatchers(HttpMethod.POST, POST_PUBLIC_MATCHERS).permitAll()
+			.antMatchers(HttpMethod.PUT, PUT_PUBLIC_MATCHERS).permitAll()
 			.anyRequest().authenticated();
 		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
 		http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
@@ -78,8 +82,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
+		configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTION"));
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
 

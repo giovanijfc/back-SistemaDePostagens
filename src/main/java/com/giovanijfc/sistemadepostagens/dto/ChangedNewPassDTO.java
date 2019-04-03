@@ -4,7 +4,7 @@ public class ChangedNewPassDTO {
 
 	private String palavraChave;
 	private String email;
-	private String newSenha;
+	private String novaSenha;
 		
 	public ChangedNewPassDTO() {
 		
@@ -26,11 +26,11 @@ public class ChangedNewPassDTO {
 		this.email = email;
 	}
 
-	public String getNewSenha() {
-		return newSenha;
+	public String getNovaSenha() {
+		return novaSenha;
 	}
 
-	public void setNewSenha(String newSenha) {
-		this.newSenha = newSenha;
+	public void setNovaSenha(String newSenha) {
+		this.novaSenha = newSenha;
 	}
 }

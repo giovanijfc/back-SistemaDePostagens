@@ -26,7 +26,7 @@ public class GrupoResource {
 	private GrupoService grupoSer;
 
 	@RequestMapping(value = "/buscar", method = RequestMethod.GET)
-	public ResponseEntity<Grupo> buscarPorEmail(@PathParam(value = "name") String name) {
+	public ResponseEntity<Grupo> buscarPorNome(@PathParam(value = "name") String name) {
 		Grupo obj = grupoSer.buscarPorNome(name);
 		return ResponseEntity.ok().body(obj);
 	}

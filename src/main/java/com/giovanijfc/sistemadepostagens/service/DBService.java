@@ -58,13 +58,13 @@ public class DBService{
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdff = new SimpleDateFormat("HH:mm:ss");
 
-		Usuario u1 = new Usuario(null, "Giovani Fonseca", "", "giovanijfc@gmail.com", pe.encode("123456"), 
+		Usuario u1 = new Usuario(null, "Giovani Fonseca",  "giovanijfc@gmail.com", pe.encode("123456"), 
 				sdf.format(new Date(System.currentTimeMillis())), pe.encode("palavrachave"));
-		Usuario u2 = new Usuario(null, "Emerson Fonseca", "", "emerson@gmail.com", pe.encode("123456"), 
+		Usuario u2 = new Usuario(null, "Emerson Fonseca",  "emerson@gmail.com", pe.encode("123456"), 
 				sdf.format(new Date(System.currentTimeMillis())), pe.encode("palavrachave"));
-		Usuario u3 = new Usuario(null, "Gisele Fonseca", "", "giselle@gmail.com", pe.encode("123456"), 
+		Usuario u3 = new Usuario(null, "Gisele Fonseca",  "giselle@gmail.com", pe.encode("123456"), 
 				sdf.format(new Date(System.currentTimeMillis())), pe.encode("palavrachave"));
-		Usuario u4 = new Usuario(null, "Edson Fonseca", "", "edson@gmail.com", pe.encode("123456"), 
+		Usuario u4 = new Usuario(null, "Edson Fonseca",  "edson@gmail.com", pe.encode("123456"), 
 				sdf.format(new Date(System.currentTimeMillis())), pe.encode("palavrachave"));
 
 		u1.addPerfil(Cargo.ADMINISTRADOR);	
