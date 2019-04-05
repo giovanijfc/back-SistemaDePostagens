@@ -1,6 +1,7 @@
 package com.giovanijfc.sistemadepostagens.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,13 +27,13 @@ public class Amizade implements Serializable{
 	@OneToOne
 	private Usuario usuarioSecundario;
 	
-	private String data;
+	private Date data;
 	
 	public Amizade() {
 		
 	}
 	
-	public Amizade(Integer id, Usuario usuarioPrincipal, Usuario usuarioSecundario, String data) {
+	public Amizade(Integer id, Usuario usuarioPrincipal, Usuario usuarioSecundario, Date data) {
 		super();
 		this.id = id;
 		this.usuarioPrincipal = usuarioPrincipal;
@@ -64,11 +65,13 @@ public class Amizade implements Serializable{
 		this.usuarioSecundario = usuarioSecundario;
 	}
 
-	public String getData() {
+	public Date getData() {
 		return data;
 	}
 
-	public void setData(String data) {
+	public void setData(Date data) {
 		this.data = data;
 	}
+
+	
 }

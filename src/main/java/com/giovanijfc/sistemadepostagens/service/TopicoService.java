@@ -31,21 +31,29 @@ public class TopicoService {
 	public Topico buscar(Integer idTopico) {
 		return topicoRepo.findById(idTopico).orElse(null);
 	}
-	
+
 	public List<Topico> buscarTodosPostSeu(Integer idUser) {
-		List<Topico> listaTopicos = topicoRepo.findAll();
+		List<Topico> listaTopicos = topicoRepo.findPost(idUser);
 		listaTopicos = listaTopicos.stream().filter(t -> t.getPostPrincipal().getUsuario().getId() == idUser)
 				.collect(Collectors.toList());
 		return listaTopicos;
 	}
 
-	public List<Postagem> buscarTodosAmizade(Integer idUser) {
+	public List<Topico> buscarTodosAmizadeESeus(Integer idUser) {
 		List<Amizade> listaAmizade = amizadeRepo.findAmigos(idUser);
 		List<Usuario> listaUsuarios = new ArrayList<Usuario>();
 		List<Postagem> listaPostagem = new ArrayList<Postagem>();
+		List<Topico> listaTopico = new ArrayList<Topico>();
+		List<Topico> listaTopicoFinal = new ArrayList<Topico>();
 		listaAmizade.stream().forEach(x -> listaUsuarios
 				.add(new Usuario(usuarioRepo.findById(x.getUsuarioSecundario().getId()).orElse(null))));
 		listaUsuarios.forEach(x -> listaPostagem.addAll(postagemRepo.findPost(x.getId())));
-		return listaPostagem;
+		listaPostagem.addAll(postagemRepo.findPost(idUser));
+		listaPostagem.forEach(p -> listaTopico.add(topicoRepo.findByPostPrincipal(p)));
+		listaTopicoFinal = listaTopico.stream().sorted((topico1, topico2) ->
+		{ return topico2.getPostPrincipal().getData().compareTo(topico1.getPostPrincipal().getData());
+		}).collect(Collectors.toList());
+		
+		return listaTopicoFinal;
 	}
 }

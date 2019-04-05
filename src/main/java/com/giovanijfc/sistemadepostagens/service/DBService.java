@@ -55,17 +55,22 @@ public class DBService{
 
 	public void instantiateDataBase() {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		SimpleDateFormat sdff = new SimpleDateFormat("HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+		SimpleDateFormat sdff = new SimpleDateFormat("HHmmss");
 
 		Usuario u1 = new Usuario(null, "Giovani Fonseca",  "giovanijfc@gmail.com", pe.encode("123456"), 
-				sdf.format(new Date(System.currentTimeMillis())), pe.encode("palavrachave"));
+				new Date(System.currentTimeMillis()), pe.encode("palavrachave"));
 		Usuario u2 = new Usuario(null, "Emerson Fonseca",  "emerson@gmail.com", pe.encode("123456"), 
-				sdf.format(new Date(System.currentTimeMillis())), pe.encode("palavrachave"));
+				new Date(System.currentTimeMillis()), pe.encode("palavrachave"));
 		Usuario u3 = new Usuario(null, "Gisele Fonseca",  "giselle@gmail.com", pe.encode("123456"), 
-				sdf.format(new Date(System.currentTimeMillis())), pe.encode("palavrachave"));
+				new Date(System.currentTimeMillis()), pe.encode("palavrachave"));
 		Usuario u4 = new Usuario(null, "Edson Fonseca",  "edson@gmail.com", pe.encode("123456"), 
-				sdf.format(new Date(System.currentTimeMillis())), pe.encode("palavrachave"));
+				new Date(System.currentTimeMillis()), pe.encode("palavrachave"));
+		
+		u1.setDescricao("UM JOVEM APAIXONADO PELA AREA DE DESENVOLVIMENTO DE APP E PAGINAS WEBS");
+		u2.setDescricao("SEMPRE PENSANDO EM MELHORAR SEMPRE!!!");
+		u3.setDescricao("VAMO QUE VAMO GALERA!!!");
+		u4.setDescricao("FALA GENTE TUDO BOM COM VOCÊS???");
 
 		u1.addPerfil(Cargo.ADMINISTRADOR);	
 		u4.addPerfil(Cargo.ADMINISTRADOR);	
@@ -98,23 +103,19 @@ public class DBService{
 
 		TopicoGrupo t3 = new TopicoGrupo(null);
 
-		PostagemGrupo p3 = new PostagemGrupo(null, "Boa Noite!", sdf.format(new Date(System.currentTimeMillis())),
-				sdff.format(new Date(System.currentTimeMillis())), m1, TipoPostagem.POSTAGEM);
+		PostagemGrupo p3 = new PostagemGrupo(null, "Boa Noite!", new Date(System.currentTimeMillis()), m1, TipoPostagem.POSTAGEM);
 		RespostaGroup r3 = new RespostaGroup(null, "Boa Noite!", sdf.format(new Date(System.currentTimeMillis())),
 				sdff.format(new Date(System.currentTimeMillis())), m2, TipoPostagem.RESPOSTA);
 		RespostaGroup r4 = new RespostaGroup(null, "Boa Noite!", sdf.format(new Date(System.currentTimeMillis())),
 				sdff.format(new Date(System.currentTimeMillis())), m2, TipoPostagem.RESPOSTA);
 
-		Postagem p1 = new Postagem(null, "Boa Noite!", sdf.format(new Date(System.currentTimeMillis())),
-				sdff.format(new Date(System.currentTimeMillis())), u1, TipoPostagem.POSTAGEM);
-		Resposta r1 = new Resposta(null, "Boa Noite!", sdf.format(new Date(System.currentTimeMillis())),
-				sdff.format(new Date(System.currentTimeMillis())), u2, TipoPostagem.RESPOSTA);
+		Postagem p1 = new Postagem(null, "Boa Noite!", new Date(System.currentTimeMillis()), u1, TipoPostagem.POSTAGEM);
+		Resposta r1 = new Resposta(null, "Boa Noite!", new Date(System.currentTimeMillis()), u2, TipoPostagem.RESPOSTA);
 
 		Postagem p2 = new Postagem(null, "Olha esse if(1>2){System.out.println('AAAAAAA')}",
-				sdf.format(new Date(System.currentTimeMillis())), sdff.format(new Date(System.currentTimeMillis())), u1,
+				new Date(System.currentTimeMillis()), u1,
 				TipoPostagem.POSTAGEM);
-		Resposta r2 = new Resposta(null, "Larga de ser doente cara", sdf.format(new Date(System.currentTimeMillis())),
-				sdff.format(new Date(System.currentTimeMillis())), u4, TipoPostagem.POSTAGEM);
+		Resposta r2 = new Resposta(null, "Larga de ser doente cara", new Date(System.currentTimeMillis()), u4, TipoPostagem.POSTAGEM);
 
 		respostaGrupoRepo.saveAll(Arrays.asList(r3, r4));
 		respostaRepo.saveAll(Arrays.asList(r1, r2));

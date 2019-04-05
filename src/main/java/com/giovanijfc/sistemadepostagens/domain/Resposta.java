@@ -2,6 +2,7 @@ package com.giovanijfc.sistemadepostagens.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -24,8 +25,7 @@ public class Resposta implements Serializable {
 	private Integer id;
 
 	private String texto;
-	private String data;
-	private String hora;
+	private Date data;
 
 	@OneToOne
 	private Usuario usuario;
@@ -39,12 +39,11 @@ public class Resposta implements Serializable {
 	public Resposta() {
 	}
 
-	public Resposta(Integer id, String texto, String data, String hora, Usuario m1, TipoPostagem tipo) {
+	public Resposta(Integer id, String texto, Date data, Usuario m1, TipoPostagem tipo) {
 		super();
 		this.id = id;
 		this.texto = texto;
 		this.data = data;
-		this.hora = hora;
 		this.usuario = m1;
 		this.tipo = tipo;
 	}
@@ -89,21 +88,12 @@ public class Resposta implements Serializable {
 	public void setTexto(String texto) {
 		this.texto = texto;
 	}
-	
-	public String getData() {
+	public Date getData() {
 		return data;
 	}
 
-	public void setData(String data) {
+	public void setData(Date data) {
 		this.data = data;
-	}
-
-	public String getHora() {
-		return hora;
-	}
-
-	public void setHora(String hora) {
-		this.hora = hora;
 	}
 
 	public Usuario getUsuario() {

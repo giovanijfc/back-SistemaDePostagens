@@ -26,6 +26,11 @@ public class Topico implements Serializable {
 		super();
 		this.id = id;
 	}
+	public Topico(Integer id, Postagem post) {
+		super();
+		this.id = id;
+		this.postPrincipal=post;
+	}
 
 	@Override
 	public int hashCode() {

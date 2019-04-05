@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.giovanijfc.sistemadepostagens.domain.Postagem;
 import com.giovanijfc.sistemadepostagens.domain.Topico;
 import com.giovanijfc.sistemadepostagens.service.TopicoService;
 
@@ -22,7 +21,8 @@ public class TopicoResource {
 	
 	@RequestMapping(value = "/buscar", method = RequestMethod.GET)
 	public ResponseEntity<Topico> buscar(@RequestParam(value = "idTopico") Integer idTopico) {
-		return ResponseEntity.ok().body(topicoSer.buscar(idTopico));
+		Topico topico = topicoSer.buscar(idTopico);
+		return ResponseEntity.ok().body(topico);
 	}
 	
 	@RequestMapping(value = "/buscarTodosPostUser", method = RequestMethod.GET)
@@ -30,9 +30,9 @@ public class TopicoResource {
 		return ResponseEntity.ok().body(topicoSer.buscarTodosPostSeu(idUser));
 	}
 
-	@RequestMapping(value="/buscarTodosPostAmigos", method=RequestMethod.GET)
-	public ResponseEntity<List<Postagem>> buscarTodosAmizade(@RequestParam(value="idUser") Integer idUser){
-			return ResponseEntity.ok().body(topicoSer.buscarTodosAmizade(idUser));
+	@RequestMapping(value="/buscarTodosPostAmigosESeus", method=RequestMethod.GET)
+	public ResponseEntity<List<Topico>> buscarTodosAmizade(@RequestParam(value="idUser") Integer idUser){
+			return ResponseEntity.ok().body(topicoSer.buscarTodosAmizadeESeus(idUser));
 	}
 	
 }

@@ -2,6 +2,7 @@ package com.giovanijfc.sistemadepostagens.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,12 +40,13 @@ public class Usuario implements Serializable {
 	@JsonIgnore
 	private String senha;
 
-	private String dataEntrada;
+	private Date dataEntrada;
 
 	private String descricao;
 
 	private String urlFotoPerfil;
 	
+	@JsonIgnore
 	private String palavraChave;
 
 	@ElementCollection(fetch=FetchType.EAGER)
@@ -69,7 +71,7 @@ public class Usuario implements Serializable {
 		addPerfil(Cargo.USUÁRIO);
 	}
 
-	public Usuario(Integer id, String nome, String email, String senha, String date, String palavraChave) {
+	public Usuario(Integer id, String nome, String email, String senha, Date date, String palavraChave) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -161,14 +163,14 @@ public class Usuario implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public String getDataEntrada() {
+	public Date getDataEntrada() {
 		return dataEntrada;
 	}
 
-	public void setDataEntrada(String dataEntrada) {
+	public void setDataEntrada(Date dataEntrada) {
 		this.dataEntrada = dataEntrada;
 	}
-	
+
 	public Set<Cargo> getCargos(){
 		return cargos.stream().map(x -> Cargo.toEnum(x)).collect(Collectors.toSet());
 	}

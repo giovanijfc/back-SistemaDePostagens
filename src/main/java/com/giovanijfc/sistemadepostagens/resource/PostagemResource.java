@@ -35,7 +35,7 @@ public class PostagemResource {
 	}
 
 	@RequestMapping(value = "/adicionarPostagem", method = RequestMethod.POST)
-	public ResponseEntity<Postagem> adicionar(@RequestBody Postagem postagem, @RequestParam(value = "id") Integer idUser) {
+	public ResponseEntity<Postagem> adicionar(@RequestBody String postagem, @RequestParam(value = "id") Integer idUser) {
 		postagemSer.adicionar(postagem, idUser);
 		return ResponseEntity.noContent().build();
 	}

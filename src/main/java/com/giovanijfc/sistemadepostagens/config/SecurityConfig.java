@@ -48,7 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			"/usuario/**"
 	};
 	private static final String[] POST_PUBLIC_MATCHERS = {
-			"/usuario/adicionarUsuario"
+			"/usuario/adicionarUsuario",
+			"/auth/**",
+			"/postagem/**"
 	};
 	private static final String[] PUT_PUBLIC_MATCHERS = {
 			"/auth/esqueciASenha"

@@ -84,7 +84,7 @@ public class GrupoService {
 	public TopicoGrupo add(PostagemGrupo postagem, Integer id, Grupo grupo) {
 		Membro membro = membroRepo.findById(id).orElse(null);
 		PostagemGrupo postagem1 = new PostagemGrupo(null, postagem.getTexto(),
-				sdf.format(new Date(System.currentTimeMillis())), sdff.format(new Date(System.currentTimeMillis())),
+				new Date(System.currentTimeMillis()),
 				membro, TipoPostagem.POSTAGEM);
 		List<Membro> membros = grupo.getMembro().stream().filter(x -> x == membro).collect(Collectors.toList());
 		if (postagem1.getTexto() != null && postagem1.getTexto() != "" && !membros.isEmpty()) {
